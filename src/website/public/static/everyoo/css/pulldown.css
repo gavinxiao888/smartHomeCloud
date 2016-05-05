@@ -1,0 +1,40 @@
+
+    /*下拉样式*/
+.s_navi
+{
+    overflow: hidden;
+    position: absolute;
+    top: 32px;
+    z-index: 99;
+    display: none;
+    float: none !important;
+    margin-top:15px;
+    /*background:url(/static/everyoo/images/navList_1.png) no-repeat;*/
+    border-radius: 8px;
+    border: 1px solid #4e5355;
+    background-color: #ffffff;
+}
+.s_navi li
+{
+    float:none !important;
+    height:30px;
+    text-align:center;
+    color:white;
+    line-height:30px;
+    width:100%;
+}
+.s_navi li a
+{
+    display:block;
+}
+.s_navi li a:hover
+{
+    background-color:#e36809;
+    color:#FFF;
+
+}
+
+a:hover
+{
+    text-decoration:none;
+}

@@ -1,0 +1,66 @@
+﻿body,div,iframe,ul,li,ol,dl,dt,dd,h1,h2,h3,h4,h5,h6,p,table,tr,td,form,input,button,select,img,textarea 
+{ margin:0; padding:0; font-weight:normal; font-style:normal; font-size:12px;   font-family:"微软雅黑";	color:#666; line-height:22px; list-style-type:none;	border:none;}
+
+.device_type_content {
+	width: 98%;
+	margin: auto;
+	margin-top: 30px;
+	overflow: hidden;
+}
+
+.device_type_div {
+	text-align: center;
+	margin: auto;
+	width: 100%;
+	margin-top: 5px;
+	overflow: hidden;
+}
+
+.device_type_div_title {
+	font-size: 14px;
+	width: 39%;
+	text-align: right;
+	float: left;
+}
+
+.device_type_div_content {
+	width: 60%;
+	text-align: left;
+	float: right;
+}
+
+.device_type_div_input {
+	  border: 1px solid #b1b1b1;
+	  height: 23px;
+	  width: 214px;
+	  text-indent: 1em;
+	  webkit-border-radius:3px;
+	  moz-border-radius:3px;
+	  border-radius:3px;
+	  line-height: 20px;
+	  border-radius: 5px;
+}
+
+.device_type_div_button {
+      margin-top: 40;
+	  border: 1px solid #b1b1b1;
+	  height: 33px;
+	  width: 110px;
+	  webkit-border-radius:3px;
+	  moz-border-radius:3px;
+	  border-radius:3px;
+	  cursor: pointer;
+	  color: #fff;
+	  background-image:url(/site/images/addFaultBtnBg.png);
+	  line-height: 20px;
+	  border-radius: 5px;
+}
+.andy-1{width:420px;height:510px;overflow:hidden;}
+.andy-2{width:100%;height:75px;background-color:#f18300;font-size:28px;color:white;line-height:75px;padding-left:22px;}
+.andy-3{width:346px;margin:0 auto;}
+.andy-4{font-size:17px;color:#222222;margin-top:13px;}
+.andy-5{height:35px;width:346px;border:none;background-color:#e8e8e8;margin-top:9px;}
+.andy-6{float:left;}
+.andy-7{width:181px;height:35px;border:none;background-color:#e8e8e8;margin-top:9px;}
+.andy-8{float:left;margin-left:29px;font-size:17px;}
+.andy-8 input{margin-top:16px;}

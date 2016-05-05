@@ -1,0 +1,4159 @@
+diff -urN siptrace/CommunicateInterface.c siptrace1/CommunicateInterface.c
+--- siptrace/CommunicateInterface.c	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/CommunicateInterface.c	2016-03-07 16:03:38.106986227 +0800
+@@ -0,0 +1,823 @@
++/*************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  FileName: CommunicateInterface.c
++  Author: cuishiyang       Version : 0.1.0          Date: 2016/02/26
++  Description:     communicate interface c file      
++  Version:         0.1.0
++  History:         
++      <author>           <time>           <version >             <desc>
++      cuishiyang          2016/02/26         0.1.0        create this file 
++*************************************************************************/
++#include <string.h>
++#include <thrift/c_glib/thrift.h>
++#include <thrift/c_glib/thrift_application_exception.h>
++      
++#include "CommunicateInterface.h"
++
++gboolean
++calculator_if_ping (CalculatorIf *iface, GError **error)
++{
++  return CALCULATOR_IF_GET_INTERFACE (iface)->ping (iface, error);
++}
++
++gboolean
++calculator_if_message (CalculatorIf *iface, gint32* _return, const gchar * body, GError **error)
++{
++  return CALCULATOR_IF_GET_INTERFACE (iface)->message (iface, _return, body, error);
++}
++
++GType
++calculator_if_get_type (void)
++{
++  static GType type = 0;
++  if (type == 0)
++  {
++    static const GTypeInfo type_info =
++    {
++      sizeof (CalculatorIfInterface),
++      NULL,  /* base_init */
++      NULL,  /* base_finalize */
++      NULL,  /* class_init */
++      NULL,  /* class_finalize */
++      NULL,  /* class_data */
++      0,     /* instance_size */
++      0,     /* n_preallocs */
++      NULL,  /* instance_init */
++      NULL   /* value_table */
++    };
++    type = g_type_register_static (G_TYPE_INTERFACE,
++                                   "CalculatorIf",
++                                   &type_info, 0);
++  }
++  return type;
++}
++
++static void 
++calculator_if_interface_init (CalculatorIfInterface *iface);
++
++G_DEFINE_TYPE_WITH_CODE (CalculatorClient, calculator_client,
++                         TYPE_SHARED_SERVICE_CLIENT, 
++                         G_IMPLEMENT_INTERFACE (TYPE_CALCULATOR_IF,
++                                                calculator_if_interface_init))
++
++gboolean calculator_client_send_ping (CalculatorIf * iface, GError ** error)
++{
++  gint32 cseqid = 0;
++  ThriftProtocol * protocol = SHARED_SERVICE_CLIENT (iface)->output_protocol;
++
++  if (thrift_protocol_write_message_begin (protocol, "ping", T_CALL, cseqid, error) < 0)
++    return FALSE;
++
++  {
++    gint32 ret;
++    gint32 xfer = 0;
++
++    
++    if ((ret = thrift_protocol_write_struct_begin (protocol, "ping_args", error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++
++  }
++
++  if (thrift_protocol_write_message_end (protocol, error) < 0)
++    return FALSE;
++  if (!thrift_transport_flush (protocol->transport, error))
++    return FALSE;
++  if (!thrift_transport_write_end (protocol->transport, error))
++    return FALSE;
++
++  return TRUE;
++}
++
++gboolean calculator_client_recv_ping (CalculatorIf * iface, GError ** error)
++{
++  gint32 rseqid;
++  gchar * fname = NULL;
++  ThriftMessageType mtype;
++  ThriftProtocol * protocol = SHARED_SERVICE_CLIENT (iface)->input_protocol;
++  ThriftApplicationException *xception;
++
++  if (thrift_protocol_read_message_begin (protocol, &fname, &mtype, &rseqid, error) < 0) {
++    if (fname) g_free (fname);
++    return FALSE;
++  }
++
++  if (mtype == T_EXCEPTION) {
++    if (fname) g_free (fname);
++    xception = g_object_new (THRIFT_TYPE_APPLICATION_EXCEPTION, NULL);
++    thrift_struct_read (THRIFT_STRUCT (xception), protocol, NULL);
++    thrift_protocol_read_message_end (protocol, NULL);
++    thrift_transport_read_end (protocol->transport, NULL);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR,xception->type, "application error: %s", xception->message);
++    g_object_unref (xception);
++    return FALSE;
++  } else if (mtype != T_REPLY) {
++    if (fname) g_free (fname);
++    thrift_protocol_skip (protocol, T_STRUCT, NULL);
++    thrift_protocol_read_message_end (protocol, NULL);
++    thrift_transport_read_end (protocol->transport, NULL);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR, THRIFT_APPLICATION_EXCEPTION_ERROR_INVALID_MESSAGE_TYPE, "invalid message type %d, expected T_REPLY", mtype);
++    return FALSE;
++  } else if (strncmp (fname, "ping", 4) != 0) {
++    thrift_protocol_skip (protocol, T_STRUCT, NULL);
++    thrift_protocol_read_message_end (protocol,error);
++    thrift_transport_read_end (protocol->transport, error);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR, THRIFT_APPLICATION_EXCEPTION_ERROR_WRONG_METHOD_NAME, "wrong method name %s, expected ping", fname);
++    if (fname) g_free (fname);
++    return FALSE;
++  }
++  if (fname) g_free (fname);
++
++  {
++    gint32 ret;
++    gint32 xfer = 0;
++    gchar *name = NULL;
++    ThriftType ftype;
++    gint16 fid;
++    guint32 len = 0;
++    gpointer data = NULL;
++    
++
++    /* satisfy -Wall in case these aren't used */
++    THRIFT_UNUSED_VAR (len);
++    THRIFT_UNUSED_VAR (data);
++
++    /* read the struct begin marker */
++    if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++    {
++      if (name) g_free (name);
++      return 0;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* read the struct fields */
++    while (1)
++    {
++      /* read the beginning of a field */
++      if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++      {
++        if (name) g_free (name);
++        return 0;
++      }
++      xfer += ret;
++      if (name) g_free (name);
++      name = NULL;
++
++      /* break if we get a STOP field */
++      if (ftype == T_STOP)
++      {
++        break;
++      }
++
++      switch (fid)
++      {
++        default:
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return 0;
++          xfer += ret;
++          break;
++      }
++      if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++        return 0;
++      xfer += ret;
++    }
++
++    if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++
++  }
++
++  if (thrift_protocol_read_message_end (protocol, error) < 0)
++    return FALSE;
++
++  if (!thrift_transport_read_end (protocol->transport, error))
++    return FALSE;
++
++  return TRUE;
++}
++
++gboolean calculator_client_ping (CalculatorIf * iface, GError ** error)
++{
++  if (!calculator_client_send_ping (iface, error))
++    return FALSE;
++  if (!calculator_client_recv_ping (iface, error))
++    return FALSE;
++  return TRUE;
++}
++
++gboolean calculator_client_send_message (CalculatorIf * iface, const gchar * body, GError ** error)
++{
++  gint32 cseqid = 0;
++  ThriftProtocol * protocol = SHARED_SERVICE_CLIENT (iface)->output_protocol;
++
++  if (thrift_protocol_write_message_begin (protocol, "message", T_CALL, cseqid, error) < 0)
++    return FALSE;
++
++  {
++    gint32 ret;
++    gint32 xfer = 0;
++
++    
++    if ((ret = thrift_protocol_write_struct_begin (protocol, "message_args", error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_field_begin (protocol, "body", T_STRING, 1, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_string (protocol, body, error)) < 0)
++      return 0;
++    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++
++  }
++
++  if (thrift_protocol_write_message_end (protocol, error) < 0)
++    return FALSE;
++  if (!thrift_transport_flush (protocol->transport, error))
++    return FALSE;
++  if (!thrift_transport_write_end (protocol->transport, error))
++    return FALSE;
++
++  return TRUE;
++}
++
++gboolean calculator_client_recv_message (CalculatorIf * iface, gint32* _return, GError ** error)
++{
++  gint32 rseqid;
++  gchar * fname = NULL;
++  ThriftMessageType mtype;
++  ThriftProtocol * protocol = SHARED_SERVICE_CLIENT (iface)->input_protocol;
++  ThriftApplicationException *xception;
++
++  if (thrift_protocol_read_message_begin (protocol, &fname, &mtype, &rseqid, error) < 0) {
++    if (fname) g_free (fname);
++    return FALSE;
++  }
++
++  if (mtype == T_EXCEPTION) {
++    if (fname) g_free (fname);
++    xception = g_object_new (THRIFT_TYPE_APPLICATION_EXCEPTION, NULL);
++    thrift_struct_read (THRIFT_STRUCT (xception), protocol, NULL);
++    thrift_protocol_read_message_end (protocol, NULL);
++    thrift_transport_read_end (protocol->transport, NULL);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR,xception->type, "application error: %s", xception->message);
++    g_object_unref (xception);
++    return FALSE;
++  } else if (mtype != T_REPLY) {
++    if (fname) g_free (fname);
++    thrift_protocol_skip (protocol, T_STRUCT, NULL);
++    thrift_protocol_read_message_end (protocol, NULL);
++    thrift_transport_read_end (protocol->transport, NULL);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR, THRIFT_APPLICATION_EXCEPTION_ERROR_INVALID_MESSAGE_TYPE, "invalid message type %d, expected T_REPLY", mtype);
++    return FALSE;
++  } else if (strncmp (fname, "message", 7) != 0) {
++    thrift_protocol_skip (protocol, T_STRUCT, NULL);
++    thrift_protocol_read_message_end (protocol,error);
++    thrift_transport_read_end (protocol->transport, error);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR, THRIFT_APPLICATION_EXCEPTION_ERROR_WRONG_METHOD_NAME, "wrong method name %s, expected message", fname);
++    if (fname) g_free (fname);
++    return FALSE;
++  }
++  if (fname) g_free (fname);
++
++  {
++    gint32 ret;
++    gint32 xfer = 0;
++    gchar *name = NULL;
++    ThriftType ftype;
++    gint16 fid;
++    guint32 len = 0;
++    gpointer data = NULL;
++    
++
++    /* satisfy -Wall in case these aren't used */
++    THRIFT_UNUSED_VAR (len);
++    THRIFT_UNUSED_VAR (data);
++
++    /* read the struct begin marker */
++    if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++    {
++      if (name) g_free (name);
++      return 0;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* read the struct fields */
++    while (1)
++    {
++      /* read the beginning of a field */
++      if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++      {
++        if (name) g_free (name);
++        return 0;
++      }
++      xfer += ret;
++      if (name) g_free (name);
++      name = NULL;
++
++      /* break if we get a STOP field */
++      if (ftype == T_STOP)
++      {
++        break;
++      }
++
++      switch (fid)
++      {
++        case 0:
++          if (ftype == T_I32)
++          {
++            if ((ret = thrift_protocol_read_i32 (protocol, &*_return, error)) < 0)
++              return 0;
++            xfer += ret;
++          } else {
++            if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++              return 0;
++            xfer += ret;
++          }
++          break;
++        default:
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return 0;
++          xfer += ret;
++          break;
++      }
++      if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++        return 0;
++      xfer += ret;
++    }
++
++    if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++
++  }
++
++  if (thrift_protocol_read_message_end (protocol, error) < 0)
++    return FALSE;
++
++  if (!thrift_transport_read_end (protocol->transport, error))
++    return FALSE;
++
++  return TRUE;
++}
++
++gboolean calculator_client_message (CalculatorIf * iface, gint32* _return, const gchar * body, GError ** error)
++{
++  if (!calculator_client_send_message (iface, body, error))
++    return FALSE;
++  if (!calculator_client_recv_message (iface, _return, error))
++    return FALSE;
++  return TRUE;
++}
++
++static void
++calculator_if_interface_init (CalculatorIfInterface *iface)
++{
++  iface->ping = calculator_client_ping;
++  iface->message = calculator_client_message;
++}
++
++static void
++calculator_client_init (CalculatorClient *client)
++{
++  THRIFT_UNUSED_VAR (client);
++}
++
++static void
++calculator_client_class_init (CalculatorClientClass *cls)
++{
++  THRIFT_UNUSED_VAR (cls);
++}
++
++static void
++calculator_handler_calculator_if_interface_init (CalculatorIfInterface *iface);
++
++G_DEFINE_TYPE_WITH_CODE (CalculatorHandler, 
++                         calculator_handler,
++                         TYPE_SHARED_SERVICE_HANDLER,
++                         G_IMPLEMENT_INTERFACE (TYPE_CALCULATOR_IF,
++                                                calculator_handler_calculator_if_interface_init))
++
++gboolean calculator_handler_ping (CalculatorIf * iface, GError ** error)
++{
++  g_return_val_if_fail (IS_CALCULATOR_HANDLER (iface), FALSE);
++
++  return CALCULATOR_HANDLER_GET_CLASS (iface)->ping (iface, error);
++}
++
++gboolean calculator_handler_message (CalculatorIf * iface, gint32* _return, const gchar * body, GError ** error)
++{
++  g_return_val_if_fail (IS_CALCULATOR_HANDLER (iface), FALSE);
++
++  return CALCULATOR_HANDLER_GET_CLASS (iface)->message (iface, _return, body, error);
++}
++
++static void
++calculator_handler_calculator_if_interface_init (CalculatorIfInterface *iface)
++{
++  iface->ping = calculator_handler_ping;
++  iface->message = calculator_handler_message;
++}
++
++static void
++calculator_handler_init (CalculatorHandler *self)
++{
++  THRIFT_UNUSED_VAR (self);
++}
++
++static void
++calculator_handler_class_init (CalculatorHandlerClass *cls)
++{
++  cls->ping = NULL;
++  cls->message = NULL;
++}
++
++enum _CalculatorProcessorProperties
++{
++  PROP_CALCULATOR_PROCESSOR_0,
++  PROP_CALCULATOR_PROCESSOR_HANDLER
++};
++
++G_DEFINE_TYPE (CalculatorProcessor,
++               calculator_processor,
++               TYPE_SHARED_SERVICE_PROCESSOR)
++
++typedef gboolean (* CalculatorProcessorProcessFunction) (CalculatorProcessor *, 
++                                                         gint32,
++                                                         ThriftProtocol *,
++                                                         ThriftProtocol *,
++                                                         GError **);
++
++typedef struct
++{
++  gchar *name;
++  CalculatorProcessorProcessFunction function;
++} calculator_processor_process_function_def;
++
++static gboolean
++calculator_processor_process_ping (CalculatorProcessor *,
++                                   gint32,
++                                   ThriftProtocol *,
++                                   ThriftProtocol *,
++                                   GError **);
++static gboolean
++calculator_processor_process_message (CalculatorProcessor *,
++                                      gint32,
++                                      ThriftProtocol *,
++                                      ThriftProtocol *,
++                                      GError **);
++
++static calculator_processor_process_function_def
++calculator_processor_process_function_defs[2] = {
++  {
++    "ping",
++    calculator_processor_process_ping
++  },
++  {
++    "message",
++    calculator_processor_process_message
++  }
++};
++
++static gboolean
++calculator_processor_process_ping (CalculatorProcessor *self,
++                                   gint32 sequence_id,
++                                   ThriftProtocol *input_protocol,
++                                   ThriftProtocol *output_protocol,
++                                   GError **error)
++{
++  gboolean result = TRUE;
++  ThriftTransport * transport;
++  ThriftApplicationException *xception;
++  CalculatorPingArgs * args =
++    g_object_new (TYPE_CALCULATOR_PING_ARGS, NULL);
++
++  g_object_get (input_protocol, "transport", &transport, NULL);
++
++  if ((thrift_struct_read (THRIFT_STRUCT (args), input_protocol, error) != -1) &&
++      (thrift_protocol_read_message_end (input_protocol, error) != -1) &&
++      (thrift_transport_read_end (transport, error) != FALSE))
++  {
++    CalculatorPingResult * result_struct;
++
++    g_object_unref (transport);
++    g_object_get (output_protocol, "transport", &transport, NULL);
++
++    result_struct = g_object_new (TYPE_CALCULATOR_PING_RESULT, NULL);
++
++    if (calculator_handler_ping (CALCULATOR_IF (self->handler),
++                                 error) == TRUE)
++    {
++      result =
++        ((thrift_protocol_write_message_begin (output_protocol,
++                                               "ping",
++                                               T_REPLY,
++                                               sequence_id,
++                                               error) != -1) &&
++         (thrift_struct_write (THRIFT_STRUCT (result_struct),
++                               output_protocol,
++                               error) != -1));
++    }
++    else
++    {
++      if (*error == NULL)
++        g_warning ("Calculator.ping implementation returned FALSE "
++                   "but did not set an error");
++
++      xception =
++        g_object_new (THRIFT_TYPE_APPLICATION_EXCEPTION,
++                      "type",    *error != NULL ? (*error)->code :
++                                 THRIFT_APPLICATION_EXCEPTION_ERROR_UNKNOWN,
++                      "message", *error != NULL ? (*error)->message : NULL,
++                      NULL);
++      g_clear_error (error);
++
++      result =
++        ((thrift_protocol_write_message_begin (output_protocol,
++                                               "ping",
++                                               T_EXCEPTION,
++                                               sequence_id,
++                                               error) != -1) &&
++         (thrift_struct_write (THRIFT_STRUCT (xception),
++                               output_protocol,
++                               error) != -1));
++
++      g_object_unref (xception);
++    }
++
++    g_object_unref (result_struct);
++
++    if (result == TRUE)
++      result =
++        ((thrift_protocol_write_message_end (output_protocol, error) != -1) &&
++         (thrift_transport_write_end (transport, error) != FALSE) &&
++         (thrift_transport_flush (transport, error) != FALSE));
++  }
++  else
++    result = FALSE;
++
++  g_object_unref (transport);
++  g_object_unref (args);
++
++  return result;
++}
++
++static gboolean
++calculator_processor_process_message (CalculatorProcessor *self,
++                                      gint32 sequence_id,
++                                      ThriftProtocol *input_protocol,
++                                      ThriftProtocol *output_protocol,
++                                      GError **error)
++{
++  gboolean result = TRUE;
++  ThriftTransport * transport;
++  ThriftApplicationException *xception;
++  CalculatorMessageArgs * args =
++    g_object_new (TYPE_CALCULATOR_MESSAGE_ARGS, NULL);
++
++  g_object_get (input_protocol, "transport", &transport, NULL);
++
++  if ((thrift_struct_read (THRIFT_STRUCT (args), input_protocol, error) != -1) &&
++      (thrift_protocol_read_message_end (input_protocol, error) != -1) &&
++      (thrift_transport_read_end (transport, error) != FALSE))
++  {
++    gchar * body;
++    gint return_value;
++    CalculatorMessageResult * result_struct;
++
++    g_object_get (args,
++                  "body", &body,
++                  NULL);
++
++    g_object_unref (transport);
++    g_object_get (output_protocol, "transport", &transport, NULL);
++
++    result_struct = g_object_new (TYPE_CALCULATOR_MESSAGE_RESULT, NULL);
++    g_object_get (result_struct, "success", &return_value, NULL);
++
++    if (calculator_handler_message (CALCULATOR_IF (self->handler),
++                                    (gint32 *)&return_value,
++                                    body,
++                                    error) == TRUE)
++    {
++      g_object_set (result_struct, "success", return_value, NULL);
++
++      result =
++        ((thrift_protocol_write_message_begin (output_protocol,
++                                               "message",
++                                               T_REPLY,
++                                               sequence_id,
++                                               error) != -1) &&
++         (thrift_struct_write (THRIFT_STRUCT (result_struct),
++                               output_protocol,
++                               error) != -1));
++    }
++    else
++    {
++      if (*error == NULL)
++        g_warning ("Calculator.message implementation returned FALSE "
++                   "but did not set an error");
++
++      xception =
++        g_object_new (THRIFT_TYPE_APPLICATION_EXCEPTION,
++                      "type",    *error != NULL ? (*error)->code :
++                                 THRIFT_APPLICATION_EXCEPTION_ERROR_UNKNOWN,
++                      "message", *error != NULL ? (*error)->message : NULL,
++                      NULL);
++      g_clear_error (error);
++
++      result =
++        ((thrift_protocol_write_message_begin (output_protocol,
++                                               "message",
++                                               T_EXCEPTION,
++                                               sequence_id,
++                                               error) != -1) &&
++         (thrift_struct_write (THRIFT_STRUCT (xception),
++                               output_protocol,
++                               error) != -1));
++
++      g_object_unref (xception);
++    }
++
++    if (body != NULL)
++      g_free (body);
++    g_object_unref (result_struct);
++
++    if (result == TRUE)
++      result =
++        ((thrift_protocol_write_message_end (output_protocol, error) != -1) &&
++         (thrift_transport_write_end (transport, error) != FALSE) &&
++         (thrift_transport_flush (transport, error) != FALSE));
++  }
++  else
++    result = FALSE;
++
++  g_object_unref (transport);
++  g_object_unref (args);
++
++  return result;
++}
++
++static gboolean
++calculator_processor_dispatch_call (ThriftDispatchProcessor *dispatch_processor,
++                                    ThriftProtocol *input_protocol,
++                                    ThriftProtocol *output_protocol,
++                                    gchar *method_name,
++                                    gint32 sequence_id,
++                                    GError **error)
++{
++  calculator_processor_process_function_def *process_function_def;
++  gboolean dispatch_result = FALSE;
++
++  CalculatorProcessor *self = CALCULATOR_PROCESSOR (dispatch_processor);
++  SharedServiceProcessorClass *parent_class =
++    g_type_class_peek_parent (CALCULATOR_PROCESSOR_GET_CLASS (self));
++
++  process_function_def = g_hash_table_lookup (self->process_map, method_name);
++  if (process_function_def != NULL)
++  {
++    dispatch_result = (*process_function_def->function) (self,
++                                                         sequence_id,
++                                                         input_protocol,
++                                                         output_protocol,
++                                                         error);
++  }
++  else
++  {
++    dispatch_result = parent_class->dispatch_call (dispatch_processor,
++                                                   input_protocol,
++                                                   output_protocol,
++                                                   method_name,
++                                                   sequence_id,
++                                                   error);
++  }
++
++  return dispatch_result;
++}
++
++static void
++calculator_processor_set_property (GObject *object,
++                                   guint property_id,
++                                   const GValue *value,
++                                   GParamSpec *pspec)
++{
++  CalculatorProcessor *self = CALCULATOR_PROCESSOR (object);
++
++  switch (property_id)
++  {
++    case PROP_CALCULATOR_PROCESSOR_HANDLER:
++      if (self->handler != NULL)
++        g_object_unref (self->handler);
++      self->handler = g_value_get_object (value);
++      g_object_ref (self->handler);
++
++      G_OBJECT_CLASS (calculator_processor_parent_class)->
++        set_property (object, property_id, value, pspec);
++      break;
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++calculator_processor_get_property (GObject *object,
++                                   guint property_id,
++                                   GValue *value,
++                                   GParamSpec *pspec)
++{
++  CalculatorProcessor *self = CALCULATOR_PROCESSOR (object);
++
++  switch (property_id)
++  {
++    case PROP_CALCULATOR_PROCESSOR_HANDLER:
++      g_value_set_object (value, self->handler);
++      break;
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++calculator_processor_dispose (GObject *gobject)
++{
++  CalculatorProcessor *self = CALCULATOR_PROCESSOR (gobject);
++
++  if (self->handler != NULL)
++  {
++    g_object_unref (self->handler);
++    self->handler = NULL;
++  }
++
++  G_OBJECT_CLASS (calculator_processor_parent_class)->dispose (gobject);
++}
++
++static void
++calculator_processor_finalize (GObject *gobject)
++{
++  CalculatorProcessor *self = CALCULATOR_PROCESSOR (gobject);
++
++  g_hash_table_destroy (self->process_map);
++
++  G_OBJECT_CLASS (calculator_processor_parent_class)->finalize (gobject);
++}
++
++static void
++calculator_processor_init (CalculatorProcessor *self)
++{
++  guint index;
++
++  self->handler = NULL;
++  self->process_map = g_hash_table_new (g_str_hash, g_str_equal);
++
++  for (index = 0; index < 2; index += 1)
++    g_hash_table_insert (self->process_map,
++                         calculator_processor_process_function_defs[index].name,
++                         &calculator_processor_process_function_defs[index]);
++}
++
++static void
++calculator_processor_class_init (CalculatorProcessorClass *cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftDispatchProcessorClass *dispatch_processor_class =
++    THRIFT_DISPATCH_PROCESSOR_CLASS (cls);
++  GParamSpec *param_spec;
++
++  gobject_class->dispose = calculator_processor_dispose;
++  gobject_class->finalize = calculator_processor_finalize;
++  gobject_class->set_property = calculator_processor_set_property;
++  gobject_class->get_property = calculator_processor_get_property;
++
++  dispatch_processor_class->dispatch_call = calculator_processor_dispatch_call;
++  cls->dispatch_call = calculator_processor_dispatch_call;
++
++  param_spec = g_param_spec_object ("handler",
++                                    "Service handler implementation",
++                                    "The service handler implementation "
++                                    "to which method calls are dispatched.",
++                                    TYPE_CALCULATOR_HANDLER,
++                                    G_PARAM_READWRITE);
++  g_object_class_install_property (gobject_class,
++                                   PROP_CALCULATOR_PROCESSOR_HANDLER,
++                                   param_spec);
++}
+diff -urN siptrace/CommunicateInterface.h siptrace1/CommunicateInterface.h
+--- siptrace/CommunicateInterface.h	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/CommunicateInterface.h	2016-03-07 16:03:38.106986227 +0800
+@@ -0,0 +1,131 @@
++/********************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  File name:      CommunicateInterface.h
++  Author: cuishiyang      Version: 0.1.0       Date: 2016/02/26
++  Description:  communicate interface header file
++  History:
++    1. Date:
++       Author:
++       Modification:
++    2. ...
++********************************************************************************/
++#ifndef _COMMUNICATE_INTERFACE_H_
++#define _COMMUNICATE_INTERFACE_H_
++
++#include <thrift/c_glib/processor/thrift_dispatch_processor.h>
++
++#include "ServiceTypes.h"
++#include "SharedService.h"
++
++/* Calculator service interface */
++typedef struct _CalculatorIf CalculatorIf;  /* dummy object */
++
++struct _CalculatorIfInterface
++{
++  GTypeInterface parent;
++
++  gboolean (*ping) (CalculatorIf *iface, GError **error);
++  gboolean (*message) (CalculatorIf *iface, gint32* _return, const gchar * body, GError **error);
++};
++typedef struct _CalculatorIfInterface CalculatorIfInterface;
++
++GType calculator_if_get_type (void);
++#define TYPE_CALCULATOR_IF (calculator_if_get_type())
++#define CALCULATOR_IF(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_IF, CalculatorIf))
++#define IS_CALCULATOR_IF(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_IF))
++#define CALCULATOR_IF_GET_INTERFACE(inst) (G_TYPE_INSTANCE_GET_INTERFACE ((inst), TYPE_CALCULATOR_IF, CalculatorIfInterface))
++
++gboolean calculator_if_ping (CalculatorIf *iface, GError **error);
++gboolean calculator_if_message (CalculatorIf *iface, gint32* _return, const gchar * body, GError **error);
++
++/* Calculator service client */
++struct _CalculatorClient
++{
++  SharedServiceClient parent;
++};
++typedef struct _CalculatorClient CalculatorClient;
++
++struct _CalculatorClientClass
++{
++  SharedServiceClientClass parent;
++};
++typedef struct _CalculatorClientClass CalculatorClientClass;
++
++GType calculator_client_get_type (void);
++#define TYPE_CALCULATOR_CLIENT (calculator_client_get_type())
++#define CALCULATOR_CLIENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_CLIENT, CalculatorClient))
++#define CALCULATOR_CLIENT_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), TYPE_CALCULATOR_CLIENT, CalculatorClientClass))
++#define CALCULATOR_IS_CLIENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_CLIENT))
++#define CALCULATOR_IS_CLIENT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_CLIENT))
++#define CALCULATOR_CLIENT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_CLIENT, CalculatorClientClass))
++
++gboolean calculator_client_ping (CalculatorIf * iface, GError ** error);
++gboolean calculator_client_send_ping (CalculatorIf * iface, GError ** error);
++gboolean calculator_client_recv_ping (CalculatorIf * iface, GError ** error);
++gboolean calculator_client_message (CalculatorIf * iface, gint32* _return, const gchar * body, GError ** error);
++gboolean calculator_client_send_message (CalculatorIf * iface, const gchar * body, GError ** error);
++gboolean calculator_client_recv_message (CalculatorIf * iface, gint32* _return, GError ** error);
++void calculator_client_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
++void calculator_client_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
++
++/* Calculator handler (abstract base class) */
++struct _CalculatorHandler
++{
++  SharedServiceHandler parent;
++};
++typedef struct _CalculatorHandler CalculatorHandler;
++
++struct _CalculatorHandlerClass
++{
++  SharedServiceHandlerClass parent;
++
++  gboolean (*ping) (CalculatorIf *iface, GError **error);
++  gboolean (*message) (CalculatorIf *iface, gint32* _return, const gchar * body, GError **error);
++};
++typedef struct _CalculatorHandlerClass CalculatorHandlerClass;
++
++GType calculator_handler_get_type (void);
++#define TYPE_CALCULATOR_HANDLER (calculator_handler_get_type())
++#define CALCULATOR_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_HANDLER, CalculatorHandler))
++#define IS_CALCULATOR_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_HANDLER))
++#define CALCULATOR_HANDLER_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), TYPE_CALCULATOR_HANDLER, CalculatorHandlerClass))
++#define IS_CALCULATOR_HANDLER_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_HANDLER))
++#define CALCULATOR_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_HANDLER, CalculatorHandlerClass))
++
++gboolean calculator_handler_ping (CalculatorIf *iface, GError **error);
++gboolean calculator_handler_message (CalculatorIf *iface, gint32* _return, const gchar * body, GError **error);
++
++/* Calculator processor */
++struct _CalculatorProcessor
++{
++  SharedServiceProcessor parent;
++
++  /* protected */
++  CalculatorHandler *handler;
++  GHashTable *process_map;
++};
++typedef struct _CalculatorProcessor CalculatorProcessor;
++
++struct _CalculatorProcessorClass
++{
++  SharedServiceProcessorClass parent;
++
++  /* protected */
++  gboolean (*dispatch_call) (ThriftDispatchProcessor *processor,
++                             ThriftProtocol *in,
++                             ThriftProtocol *out,
++                             gchar *fname,
++                             gint32 seqid,
++                             GError **error);
++};
++typedef struct _CalculatorProcessorClass CalculatorProcessorClass;
++
++GType calculator_processor_get_type (void);
++#define TYPE_CALCULATOR_PROCESSOR (calculator_processor_get_type())
++#define CALCULATOR_PROCESSOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_PROCESSOR, CalculatorProcessor))
++#define IS_CALCULATOR_PROCESSOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_PROCESSOR))
++#define CALCULATOR_PROCESSOR_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), TYPE_CALCULATOR_PROCESSOR, CalculatorProcessorClass))
++#define IS_CALCULATOR_PROCESSOR_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_PROCESSOR))
++#define CALCULATOR_PROCESSOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_PROCESSOR, CalculatorProcessorClass))
++
++#endif /* _COMMUNICATE_INTERFACE_H_ */
+diff -urN siptrace/Makefile siptrace1/Makefile
+--- siptrace/Makefile	2016-03-07 16:04:44.034819022 +0800
++++ siptrace1/Makefile	2016-03-07 16:03:38.106986227 +0800
+@@ -8,6 +8,115 @@
+ auto_gen=
+ NAME=siptrace.so
+ LIBS=
++JLIB=json
++GLIB=glib
++THRIFT=thrift
++THRIFTNB=thrift-nb
++THRIFTZ=thrift-z
++THRIFT_C=thrift_c_glib
++GOBJ=gobject
++#EVENT=event
++
++BUILDER = $(shell which pkg-config)
++ifeq ($(BUILDER),)
++	JSONC=$(shell ls $(SYSBASE)/include/lib/libjson*.so $(LOCALBASE)/lib/libjson*.so 2>/dev/null | grep json-c)
++else
++	JSONC=$(shell pkg-config --libs json-c 2>/dev/null | grep json-c)
++endif
++
++ifeq ($(BUILDER),)
++	GLIBC=$(shell ls $(SYSBASE)/include/lib/libglib*.so $(LOCALBASE)/lib/libglib*.so 2>/dev/null | grep glib-2.0)
++else
++	GLIBC=$(shell pkg-config --libs glib-2.0 2>/dev/null | grep glib-2.0)
++endif
++
++ifeq ($(BUILDER),)
++	THRIFT=$(shell ls $(SYSBASE)/lib/libthrift*.so $(LOCALBASE)/lib/libthrift*.so 2>/dev/null | grep thrift)
++else
++	THRIFT=$(shell pkg-config --libs thrift 2>/dev/null | grep thrift)
++endif
++
++ifeq ($(BUILDER),)
++	THRIFTNB=$(shell ls $(SYSBASE)/include/lib/libthriftnb*.so $(LOCALBASE)/lib/libthriftnb*.so 2>/dev/null | grep thriftnb)
++else
++	THRIFTNB=$(shell pkg-config --libs thriftnb 2>/dev/null | grep thriftnb)
++endif
++
++ifeq ($(BUILDER),)
++	THRIFTZ=$(shell ls $(SYSBASE)/include/lib/libthriftz*.so $(LOCALBASE)/lib/libthriftz*.so 2>/dev/null | grep thriftz)
++else
++	THRIFTZ=$(shell pkg-config --libs thriftz 2>/dev/null | grep thriftz)
++endif
++
++ifeq ($(BUILDER),)
++	THRIFT_C=$(shell ls $(SYSBASE)/include/lib/libthrift_c_glib*.so $(LOCALBASE)/lib/libthrift_c_glib*.so 2>/dev/null | grep thrift_c_glib)
++else
++	THRIFT_C=$(shell pkg-config --libs thrift_c_glib 2>/dev/null | grep thrift_c_glib)
++endif
++
++ifeq ($(BUILDER),)
++	GOBJ=$(shell ls $(SYSBASE)/include/lib/libgobject*.so $(LOCALBASE)/lib/libobject*.so 2>/dev/null | grep gobject)
++else
++	GOBJ=$(shell pkg-config --libs gobject 2>/dev/null | grep gobject)
++endif
++
++#ifeq ($(BUILDER),)
++#	EVENT=$(shell ls $(SYSBASE)/lib/libevent*.so $(LOCALBASE)/lib/libevent*.so 2>/dev/null | grep event-2.0)
++#else
++#	EVENT=$(shell pkg-config --libs event-2.0 2>/dev/null | grep event-2.0)
++#endif
++
++ifneq ($(JSONC),)
++	JLIB=json-c
++endif
++
++ifneq ($(GLIBC),)
++	GLIB=glib-2.0
++endif
++
++ifneq ($(THRIFT),)
++	THRIFT=thrift
++endif
++
++ifneq ($(THRIFTNB),)
++	THRIFTNB=thriftnb
++endif
++
++ifneq ($(THRIFTZ),)
++	THRIFTZ=thriftz
++endif
++
++ifneq ($(THRIFT_C),)
++	THRIFT_C=thrift_c_glib
++endif
++
++ifneq ($(GOBJ),)
++	GOBJ=gobject
++endif
++
++#ifneq ($(EVENT),)
++#	EVENT=event-2.0
++#endif
++
++ifeq ($(BUILDER),)
++	DEFS+=-I/usr/include/$(JLIB) -I$(LOCALBASE)/include/$(JLIB) \
++       -I$(LOCALBASE)/include  -I/usr/include -I$(LOCALBASE)/include/glib-2.0 -I$(LOCALBASE)/lib/glib-2.0/include -I./gen-c_glib/
++	LIBS+=-L$(SYSBASE)/include/lib -L$(LOCALBASE)/lib -l$(JLIB) -luuid -lcurl -lglib-2.0 -lthrift -lthriftnb -lthriftz -lthrift_c_glib -lgobject-2.0
++else
++    DEFS+= $(shell pkg-config --cflags $(JLIB))
++	LIBS+= $(shell pkg-config --libs $(JLIB) uuid)
++	LIBS+= $(shell pkg-config --libs  libcurl)
++	LIBS+= $(shell pkg-config --libs  glib-2.0)
++	LIBS+= $(shell pkg-config --libs  thrift)
++	LIBS+= $(shell pkg-config --libs  thriftnb)
++	LIBS+= $(shell pkg-config --libs  thriftz)
++	LIBS+= $(shell pkg-config --libs  thrift_c_glib)
++	LIBS+= $(shell pkg-config --libs  gobject-2.0)
++#	LIBS+= $(shell pkg-config --libs  event)
++
++#DEFS+= $(shell pkg-config --cflags libevent)
++#LIBS+= $(shell pkg-config --libs libevent)
++endif
+ 
+ DEFS+=-DKAMAILIO_MOD_INTERFACE
+ 
+@@ -15,4 +124,5 @@
+ SER_LIBS+=$(SERLIBPATH)/kmi/kmi
+ SER_LIBS+=$(SERLIBPATH)/srdb1/srdb1
+ SER_LIBS+=$(SERLIBPATH)/kcore/kcore
++SER_LIBS+=$(SERLIBPATH)/cds/ser_cds
+ include ../../Makefile.modules
+diff -urN siptrace/ServiceTypes.c siptrace1/ServiceTypes.c
+--- siptrace/ServiceTypes.c	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/ServiceTypes.c	2016-03-07 16:03:38.106986227 +0800
+@@ -0,0 +1,776 @@
++/*************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  FileName: ServiceTypes.c
++  Author: cuishiyang       Version : 0.1.0          Date: 2016/02/26
++  Description:    thrift service types c file      
++  Version:         0.1.0
++  History:         
++      <author>           <time>           <version >             <desc>
++      cuishiyang          2016/02/26         0.1.0        create this file 
++*************************************************************************/
++#include <math.h>
++#include <thrift/c_glib/thrift.h>
++
++#include "ServiceTypes.h"
++
++/* constants */
++
++/* reads a calculator_ping_args object */
++static gint32
++calculator_ping_args_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  CalculatorPingArgs * this_object = CALCULATOR_PING_ARGS(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++calculator_ping_args_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  CalculatorPingArgs * this_object = CALCULATOR_PING_ARGS(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "CalculatorPingArgs", error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void 
++calculator_ping_args_instance_init (CalculatorPingArgs * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++}
++
++static void 
++calculator_ping_args_finalize (GObject *object)
++{
++  CalculatorPingArgs *tobject = CALCULATOR_PING_ARGS (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++}
++
++static void
++calculator_ping_args_class_init (CalculatorPingArgsClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = calculator_ping_args_read;
++  struct_class->write = calculator_ping_args_write;
++
++  gobject_class->finalize = calculator_ping_args_finalize;
++}
++
++GType
++calculator_ping_args_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (CalculatorPingArgsClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) calculator_ping_args_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (CalculatorPingArgs),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) calculator_ping_args_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "CalculatorPingArgsType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
++/* reads a calculator_ping_result object */
++static gint32
++calculator_ping_result_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  CalculatorPingResult * this_object = CALCULATOR_PING_RESULT(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++calculator_ping_result_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  CalculatorPingResult * this_object = CALCULATOR_PING_RESULT(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "CalculatorPingResult", error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void 
++calculator_ping_result_instance_init (CalculatorPingResult * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++}
++
++static void 
++calculator_ping_result_finalize (GObject *object)
++{
++  CalculatorPingResult *tobject = CALCULATOR_PING_RESULT (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++}
++
++static void
++calculator_ping_result_class_init (CalculatorPingResultClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = calculator_ping_result_read;
++  struct_class->write = calculator_ping_result_write;
++
++  gobject_class->finalize = calculator_ping_result_finalize;
++}
++
++GType
++calculator_ping_result_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (CalculatorPingResultClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) calculator_ping_result_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (CalculatorPingResult),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) calculator_ping_result_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "CalculatorPingResultType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
++enum _CalculatorMessageArgsProperties
++{
++  PROP_CALCULATOR_MESSAGE_ARGS_0,
++  PROP_CALCULATOR_MESSAGE_ARGS_BODY
++};
++
++/* reads a calculator_message_args object */
++static gint32
++calculator_message_args_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  CalculatorMessageArgs * this_object = CALCULATOR_MESSAGE_ARGS(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      case 1:
++        if (ftype == T_STRING)
++        {
++          if (this_object->body != NULL)
++          {
++            g_free(this_object->body);
++            this_object->body = NULL;
++          }
++
++          if ((ret = thrift_protocol_read_string (protocol, &this_object->body, error)) < 0)
++            return -1;
++          xfer += ret;
++          this_object->__isset_body = TRUE;
++        } else {
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return -1;
++          xfer += ret;
++        }
++        break;
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++calculator_message_args_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  CalculatorMessageArgs * this_object = CALCULATOR_MESSAGE_ARGS(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "CalculatorMessageArgs", error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_begin (protocol, "body", T_STRING, 1, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_string (protocol, this_object->body, error)) < 0)
++    return -1;
++  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void
++calculator_message_args_set_property (GObject *object,
++                                      guint property_id,
++                                      const GValue *value,
++                                      GParamSpec *pspec)
++{
++  CalculatorMessageArgs *self = CALCULATOR_MESSAGE_ARGS (object);
++
++  switch (property_id)
++  {
++    case PROP_CALCULATOR_MESSAGE_ARGS_BODY:
++      if (self->body != NULL)
++        g_free (self->body);
++      self->body = g_value_dup_string (value);
++      self->__isset_body = TRUE;
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++calculator_message_args_get_property (GObject *object,
++                                      guint property_id,
++                                      GValue *value,
++                                      GParamSpec *pspec)
++{
++  CalculatorMessageArgs *self = CALCULATOR_MESSAGE_ARGS (object);
++
++  switch (property_id)
++  {
++    case PROP_CALCULATOR_MESSAGE_ARGS_BODY:
++      g_value_set_string (value, self->body);
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void 
++calculator_message_args_instance_init (CalculatorMessageArgs * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++  object->body = NULL;
++  object->__isset_body = FALSE;
++}
++
++static void 
++calculator_message_args_finalize (GObject *object)
++{
++  CalculatorMessageArgs *tobject = CALCULATOR_MESSAGE_ARGS (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++  if (tobject->body != NULL)
++  {
++    g_free(tobject->body);
++    tobject->body = NULL;
++  }
++}
++
++static void
++calculator_message_args_class_init (CalculatorMessageArgsClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = calculator_message_args_read;
++  struct_class->write = calculator_message_args_write;
++
++  gobject_class->finalize = calculator_message_args_finalize;
++  gobject_class->get_property = calculator_message_args_get_property;
++  gobject_class->set_property = calculator_message_args_set_property;
++
++  g_object_class_install_property
++    (gobject_class,
++     PROP_CALCULATOR_MESSAGE_ARGS_BODY,
++     g_param_spec_string ("body",
++                          NULL,
++                          NULL,
++                          NULL,
++                          G_PARAM_READWRITE));
++}
++
++GType
++calculator_message_args_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (CalculatorMessageArgsClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) calculator_message_args_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (CalculatorMessageArgs),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) calculator_message_args_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "CalculatorMessageArgsType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
++enum _CalculatorMessageResultProperties
++{
++  PROP_CALCULATOR_MESSAGE_RESULT_0,
++  PROP_CALCULATOR_MESSAGE_RESULT_SUCCESS
++};
++
++/* reads a calculator_message_result object */
++static gint32
++calculator_message_result_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  CalculatorMessageResult * this_object = CALCULATOR_MESSAGE_RESULT(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      case 0:
++        if (ftype == T_I32)
++        {
++          if ((ret = thrift_protocol_read_i32 (protocol, &this_object->success, error)) < 0)
++            return -1;
++          xfer += ret;
++          this_object->__isset_success = TRUE;
++        } else {
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return -1;
++          xfer += ret;
++        }
++        break;
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++calculator_message_result_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  CalculatorMessageResult * this_object = CALCULATOR_MESSAGE_RESULT(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "CalculatorMessageResult", error)) < 0)
++    return -1;
++  xfer += ret;
++  if (this_object->__isset_success == TRUE) {
++    if ((ret = thrift_protocol_write_field_begin (protocol, "success", T_I32, 0, error)) < 0)
++      return -1;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_i32 (protocol, this_object->success, error)) < 0)
++      return -1;
++    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void
++calculator_message_result_set_property (GObject *object,
++                                        guint property_id,
++                                        const GValue *value,
++                                        GParamSpec *pspec)
++{
++  CalculatorMessageResult *self = CALCULATOR_MESSAGE_RESULT (object);
++
++  switch (property_id)
++  {
++    case PROP_CALCULATOR_MESSAGE_RESULT_SUCCESS:
++      self->success = g_value_get_int (value);
++      self->__isset_success = TRUE;
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++calculator_message_result_get_property (GObject *object,
++                                        guint property_id,
++                                        GValue *value,
++                                        GParamSpec *pspec)
++{
++  CalculatorMessageResult *self = CALCULATOR_MESSAGE_RESULT (object);
++
++  switch (property_id)
++  {
++    case PROP_CALCULATOR_MESSAGE_RESULT_SUCCESS:
++      g_value_set_int (value, self->success);
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void 
++calculator_message_result_instance_init (CalculatorMessageResult * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++  object->success = 0;
++  object->__isset_success = FALSE;
++}
++
++static void 
++calculator_message_result_finalize (GObject *object)
++{
++  CalculatorMessageResult *tobject = CALCULATOR_MESSAGE_RESULT (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++}
++
++static void
++calculator_message_result_class_init (CalculatorMessageResultClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = calculator_message_result_read;
++  struct_class->write = calculator_message_result_write;
++
++  gobject_class->finalize = calculator_message_result_finalize;
++  gobject_class->get_property = calculator_message_result_get_property;
++  gobject_class->set_property = calculator_message_result_set_property;
++
++  g_object_class_install_property
++    (gobject_class,
++     PROP_CALCULATOR_MESSAGE_RESULT_SUCCESS,
++     g_param_spec_int ("success",
++                       NULL,
++                       NULL,
++                       G_MININT32,
++                       G_MAXINT32,
++                       0,
++                       G_PARAM_READWRITE));
++}
++
++GType
++calculator_message_result_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (CalculatorMessageResultClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) calculator_message_result_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (CalculatorMessageResult),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) calculator_message_result_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "CalculatorMessageResultType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
+diff -urN siptrace/ServiceTypes.h siptrace1/ServiceTypes.h
+--- siptrace/ServiceTypes.h	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/ServiceTypes.h	2016-03-07 16:03:38.106986227 +0800
+@@ -0,0 +1,127 @@
++/********************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  File name:      ServiceTypes.h
++  Author: cuishiyang      Version: 0.1.0       Date: 2016/02/26
++  Description:  thrift service types header file
++  History:
++    1. Date:
++       Author:
++       Modification:
++    2. ...
++********************************************************************************/
++#ifndef _SERVICE_TYPES_H_
++#define _SERVICE_TYPES_H_
++
++/* base includes */
++#include <glib-object.h>
++#include <thrift/c_glib/thrift_struct.h>
++#include <thrift/c_glib/protocol/thrift_protocol.h>
++
++/* other thrift includes */
++#include "SharedTypes.h"
++
++/* custom thrift includes */
++
++/* begin types */
++
++typedef gint32 MyInteger;
++
++/* constants */
++
++/* struct CalculatorPingArgs */
++struct _CalculatorPingArgs
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++};
++typedef struct _CalculatorPingArgs CalculatorPingArgs;
++
++struct _CalculatorPingArgsClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _CalculatorPingArgsClass CalculatorPingArgsClass;
++
++GType calculator_ping_args_get_type (void);
++#define TYPE_CALCULATOR_PING_ARGS (calculator_ping_args_get_type())
++#define CALCULATOR_PING_ARGS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_PING_ARGS, CalculatorPingArgs))
++#define CALCULATOR_PING_ARGS_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_CALCULATOR_PING_ARGS, CalculatorPingArgsClass))
++#define IS_CALCULATOR_PING_ARGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_PING_ARGS))
++#define IS_CALCULATOR_PING_ARGS_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_PING_ARGS))
++#define CALCULATOR_PING_ARGS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_PING_ARGS, CalculatorPingArgsClass))
++
++/* struct CalculatorPingResult */
++struct _CalculatorPingResult
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++};
++typedef struct _CalculatorPingResult CalculatorPingResult;
++
++struct _CalculatorPingResultClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _CalculatorPingResultClass CalculatorPingResultClass;
++
++GType calculator_ping_result_get_type (void);
++#define TYPE_CALCULATOR_PING_RESULT (calculator_ping_result_get_type())
++#define CALCULATOR_PING_RESULT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_PING_RESULT, CalculatorPingResult))
++#define CALCULATOR_PING_RESULT_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_CALCULATOR_PING_RESULT, CalculatorPingResultClass))
++#define IS_CALCULATOR_PING_RESULT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_PING_RESULT))
++#define IS_CALCULATOR_PING_RESULT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_PING_RESULT))
++#define CALCULATOR_PING_RESULT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_PING_RESULT, CalculatorPingResultClass))
++
++/* struct CalculatorMessageArgs */
++struct _CalculatorMessageArgs
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++  gchar * body;
++  gboolean __isset_body;
++};
++typedef struct _CalculatorMessageArgs CalculatorMessageArgs;
++
++struct _CalculatorMessageArgsClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _CalculatorMessageArgsClass CalculatorMessageArgsClass;
++
++GType calculator_message_args_get_type (void);
++#define TYPE_CALCULATOR_MESSAGE_ARGS (calculator_message_args_get_type())
++#define CALCULATOR_MESSAGE_ARGS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_MESSAGE_ARGS, CalculatorMessageArgs))
++#define CALCULATOR_MESSAGE_ARGS_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_CALCULATOR_MESSAGE_ARGS, CalculatorMessageArgsClass))
++#define IS_CALCULATOR_MESSAGE_ARGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_MESSAGE_ARGS))
++#define IS_CALCULATOR_MESSAGE_ARGS_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_MESSAGE_ARGS))
++#define CALCULATOR_MESSAGE_ARGS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_MESSAGE_ARGS, CalculatorMessageArgsClass))
++
++/* struct CalculatorMessageResult */
++struct _CalculatorMessageResult
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++  gint32 success;
++  gboolean __isset_success;
++};
++typedef struct _CalculatorMessageResult CalculatorMessageResult;
++
++struct _CalculatorMessageResultClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _CalculatorMessageResultClass CalculatorMessageResultClass;
++
++GType calculator_message_result_get_type (void);
++#define TYPE_CALCULATOR_MESSAGE_RESULT (calculator_message_result_get_type())
++#define CALCULATOR_MESSAGE_RESULT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CALCULATOR_MESSAGE_RESULT, CalculatorMessageResult))
++#define CALCULATOR_MESSAGE_RESULT_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_CALCULATOR_MESSAGE_RESULT, CalculatorMessageResultClass))
++#define IS_CALCULATOR_MESSAGE_RESULT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CALCULATOR_MESSAGE_RESULT))
++#define IS_CALCULATOR_MESSAGE_RESULT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_CALCULATOR_MESSAGE_RESULT))
++#define CALCULATOR_MESSAGE_RESULT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_CALCULATOR_MESSAGE_RESULT, CalculatorMessageResultClass))
++
++#endif /* _SERVICE_TYPES_H_ */
+diff -urN siptrace/SharedService.c siptrace1/SharedService.c
+--- siptrace/SharedService.c	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/SharedService.c	2016-03-07 16:03:38.106986227 +0800
+@@ -0,0 +1,623 @@
++/*************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  FileName: SharedService.c
++  Author: cuishiyang       Version : 0.1.0          Date: 2016/02/26
++  Description:     thrift shared service types c file      
++  Version:         0.1.0
++  History:         
++      <author>           <time>           <version >             <desc>
++      cuishiyang          2016/02/26         0.1.0        create this file 
++*************************************************************************/
++#include <string.h>
++#include <thrift/c_glib/thrift.h>
++#include <thrift/c_glib/thrift_application_exception.h>
++
++#include "SharedService.h"
++
++gboolean
++shared_service_if_get_struct (SharedServiceIf *iface, SharedStruct ** _return, const gint32 key, GError **error)
++{
++  return SHARED_SERVICE_IF_GET_INTERFACE (iface)->get_struct (iface, _return, key, error);
++}
++
++GType
++shared_service_if_get_type (void)
++{
++  static GType type = 0;
++  if (type == 0)
++  {
++    static const GTypeInfo type_info =
++    {
++      sizeof (SharedServiceIfInterface),
++      NULL,  /* base_init */
++      NULL,  /* base_finalize */
++      NULL,  /* class_init */
++      NULL,  /* class_finalize */
++      NULL,  /* class_data */
++      0,     /* instance_size */
++      0,     /* n_preallocs */
++      NULL,  /* instance_init */
++      NULL   /* value_table */
++    };
++    type = g_type_register_static (G_TYPE_INTERFACE,
++                                   "SharedServiceIf",
++                                   &type_info, 0);
++  }
++  return type;
++}
++
++static void 
++shared_service_if_interface_init (SharedServiceIfInterface *iface);
++
++G_DEFINE_TYPE_WITH_CODE (SharedServiceClient, shared_service_client,
++                         G_TYPE_OBJECT, 
++                         G_IMPLEMENT_INTERFACE (TYPE_SHARED_SERVICE_IF,
++                                                shared_service_if_interface_init))
++
++enum _SharedServiceClientProperties
++{
++  PROP_0,
++  PROP_SHARED_SERVICE_CLIENT_INPUT_PROTOCOL,
++  PROP_SHARED_SERVICE_CLIENT_OUTPUT_PROTOCOL
++};
++
++void
++shared_service_client_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
++{
++  SharedServiceClient *client = SHARED_SERVICE_CLIENT (object);
++
++  THRIFT_UNUSED_VAR (pspec);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_CLIENT_INPUT_PROTOCOL:
++      client->input_protocol = g_value_get_object (value);
++      break;
++    case PROP_SHARED_SERVICE_CLIENT_OUTPUT_PROTOCOL:
++      client->output_protocol = g_value_get_object (value);
++      break;
++  }
++}
++
++void
++shared_service_client_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
++{
++  SharedServiceClient *client = SHARED_SERVICE_CLIENT (object);
++
++  THRIFT_UNUSED_VAR (pspec);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_CLIENT_INPUT_PROTOCOL:
++      g_value_set_object (value, client->input_protocol);
++      break;
++    case PROP_SHARED_SERVICE_CLIENT_OUTPUT_PROTOCOL:
++      g_value_set_object (value, client->output_protocol);
++      break;
++  }
++}
++
++gboolean shared_service_client_send_get_struct (SharedServiceIf * iface, const gint32 key, GError ** error)
++{
++  gint32 cseqid = 0;
++  ThriftProtocol * protocol = SHARED_SERVICE_CLIENT (iface)->output_protocol;
++
++  if (thrift_protocol_write_message_begin (protocol, "getStruct", T_CALL, cseqid, error) < 0)
++    return FALSE;
++
++  {
++    gint32 ret;
++    gint32 xfer = 0;
++
++    
++    if ((ret = thrift_protocol_write_struct_begin (protocol, "getStruct_args", error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_field_begin (protocol, "key", T_I32, 1, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_i32 (protocol, key, error)) < 0)
++      return 0;
++    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++    if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++
++  }
++
++  if (thrift_protocol_write_message_end (protocol, error) < 0)
++    return FALSE;
++  if (!thrift_transport_flush (protocol->transport, error))
++    return FALSE;
++  if (!thrift_transport_write_end (protocol->transport, error))
++    return FALSE;
++
++  return TRUE;
++}
++
++gboolean shared_service_client_recv_get_struct (SharedServiceIf * iface, SharedStruct ** _return, GError ** error)
++{
++  gint32 rseqid;
++  gchar * fname = NULL;
++  ThriftMessageType mtype;
++  ThriftProtocol * protocol = SHARED_SERVICE_CLIENT (iface)->input_protocol;
++  ThriftApplicationException *xception;
++
++  if (thrift_protocol_read_message_begin (protocol, &fname, &mtype, &rseqid, error) < 0) {
++    if (fname) g_free (fname);
++    return FALSE;
++  }
++
++  if (mtype == T_EXCEPTION) {
++    if (fname) g_free (fname);
++    xception = g_object_new (THRIFT_TYPE_APPLICATION_EXCEPTION, NULL);
++    thrift_struct_read (THRIFT_STRUCT (xception), protocol, NULL);
++    thrift_protocol_read_message_end (protocol, NULL);
++    thrift_transport_read_end (protocol->transport, NULL);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR,xception->type, "application error: %s", xception->message);
++    g_object_unref (xception);
++    return FALSE;
++  } else if (mtype != T_REPLY) {
++    if (fname) g_free (fname);
++    thrift_protocol_skip (protocol, T_STRUCT, NULL);
++    thrift_protocol_read_message_end (protocol, NULL);
++    thrift_transport_read_end (protocol->transport, NULL);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR, THRIFT_APPLICATION_EXCEPTION_ERROR_INVALID_MESSAGE_TYPE, "invalid message type %d, expected T_REPLY", mtype);
++    return FALSE;
++  } else if (strncmp (fname, "getStruct", 9) != 0) {
++    thrift_protocol_skip (protocol, T_STRUCT, NULL);
++    thrift_protocol_read_message_end (protocol,error);
++    thrift_transport_read_end (protocol->transport, error);
++    g_set_error (error, THRIFT_APPLICATION_EXCEPTION_ERROR, THRIFT_APPLICATION_EXCEPTION_ERROR_WRONG_METHOD_NAME, "wrong method name %s, expected getStruct", fname);
++    if (fname) g_free (fname);
++    return FALSE;
++  }
++  if (fname) g_free (fname);
++
++  {
++    gint32 ret;
++    gint32 xfer = 0;
++    gchar *name = NULL;
++    ThriftType ftype;
++    gint16 fid;
++    guint32 len = 0;
++    gpointer data = NULL;
++    
++
++    /* satisfy -Wall in case these aren't used */
++    THRIFT_UNUSED_VAR (len);
++    THRIFT_UNUSED_VAR (data);
++
++    /* read the struct begin marker */
++    if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++    {
++      if (name) g_free (name);
++      return 0;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* read the struct fields */
++    while (1)
++    {
++      /* read the beginning of a field */
++      if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++      {
++        if (name) g_free (name);
++        return 0;
++      }
++      xfer += ret;
++      if (name) g_free (name);
++      name = NULL;
++
++      /* break if we get a STOP field */
++      if (ftype == T_STOP)
++      {
++        break;
++      }
++
++      switch (fid)
++      {
++        case 0:
++          if (ftype == T_STRUCT)
++          {
++            if ((ret = thrift_struct_read (THRIFT_STRUCT (*_return), protocol, error)) < 0)
++            {
++              return 0;
++            }
++            xfer += ret;
++          } else {
++            if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++              return 0;
++            xfer += ret;
++          }
++          break;
++        default:
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return 0;
++          xfer += ret;
++          break;
++      }
++      if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++        return 0;
++      xfer += ret;
++    }
++
++    if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++      return 0;
++    xfer += ret;
++
++  }
++
++  if (thrift_protocol_read_message_end (protocol, error) < 0)
++    return FALSE;
++
++  if (!thrift_transport_read_end (protocol->transport, error))
++    return FALSE;
++
++  return TRUE;
++}
++
++gboolean shared_service_client_get_struct (SharedServiceIf * iface, SharedStruct ** _return, const gint32 key, GError ** error)
++{
++  if (!shared_service_client_send_get_struct (iface, key, error))
++    return FALSE;
++  if (!shared_service_client_recv_get_struct (iface, _return, error))
++    return FALSE;
++  return TRUE;
++}
++
++static void
++shared_service_if_interface_init (SharedServiceIfInterface *iface)
++{
++  iface->get_struct = shared_service_client_get_struct;
++}
++
++static void
++shared_service_client_init (SharedServiceClient *client)
++{
++  client->input_protocol = NULL;
++  client->output_protocol = NULL;
++}
++
++static void
++shared_service_client_class_init (SharedServiceClientClass *cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  GParamSpec *param_spec;
++
++  gobject_class->set_property = shared_service_client_set_property;
++  gobject_class->get_property = shared_service_client_get_property;
++
++  param_spec = g_param_spec_object ("input_protocol",
++                                    "input protocol (construct)",
++                                    "Set the client input protocol",
++                                    THRIFT_TYPE_PROTOCOL,
++                                    G_PARAM_READWRITE);
++  g_object_class_install_property (gobject_class,
++                                   PROP_SHARED_SERVICE_CLIENT_INPUT_PROTOCOL, param_spec);
++
++  param_spec = g_param_spec_object ("output_protocol",
++                                    "output protocol (construct)",
++                                    "Set the client output protocol",
++                                    THRIFT_TYPE_PROTOCOL,
++                                    G_PARAM_READWRITE);
++  g_object_class_install_property (gobject_class,
++                                   PROP_SHARED_SERVICE_CLIENT_OUTPUT_PROTOCOL, param_spec);
++}
++
++static void
++shared_service_handler_shared_service_if_interface_init (SharedServiceIfInterface *iface);
++
++G_DEFINE_TYPE_WITH_CODE (SharedServiceHandler, 
++                         shared_service_handler,
++                         G_TYPE_OBJECT,
++                         G_IMPLEMENT_INTERFACE (TYPE_SHARED_SERVICE_IF,
++                                                shared_service_handler_shared_service_if_interface_init))
++
++gboolean shared_service_handler_get_struct (SharedServiceIf * iface, SharedStruct ** _return, const gint32 key, GError ** error)
++{
++  g_return_val_if_fail (IS_SHARED_SERVICE_HANDLER (iface), FALSE);
++
++  return SHARED_SERVICE_HANDLER_GET_CLASS (iface)->get_struct (iface, _return, key, error);
++}
++
++static void
++shared_service_handler_shared_service_if_interface_init (SharedServiceIfInterface *iface)
++{
++  iface->get_struct = shared_service_handler_get_struct;
++}
++
++static void
++shared_service_handler_init (SharedServiceHandler *self)
++{
++  THRIFT_UNUSED_VAR (self);
++}
++
++static void
++shared_service_handler_class_init (SharedServiceHandlerClass *cls)
++{
++  cls->get_struct = NULL;
++}
++
++enum _SharedServiceProcessorProperties
++{
++  PROP_SHARED_SERVICE_PROCESSOR_0,
++  PROP_SHARED_SERVICE_PROCESSOR_HANDLER
++};
++
++G_DEFINE_TYPE (SharedServiceProcessor,
++               shared_service_processor,
++               THRIFT_TYPE_DISPATCH_PROCESSOR)
++
++typedef gboolean (* SharedServiceProcessorProcessFunction) (SharedServiceProcessor *, 
++                                                            gint32,
++                                                            ThriftProtocol *,
++                                                            ThriftProtocol *,
++                                                            GError **);
++
++typedef struct
++{
++  gchar *name;
++  SharedServiceProcessorProcessFunction function;
++} shared_service_processor_process_function_def;
++
++static gboolean
++shared_service_processor_process_get_struct (SharedServiceProcessor *,
++                                             gint32,
++                                             ThriftProtocol *,
++                                             ThriftProtocol *,
++                                             GError **);
++
++static shared_service_processor_process_function_def
++shared_service_processor_process_function_defs[1] = {
++  {
++    "getStruct",
++    shared_service_processor_process_get_struct
++  }
++};
++
++static gboolean
++shared_service_processor_process_get_struct (SharedServiceProcessor *self,
++                                             gint32 sequence_id,
++                                             ThriftProtocol *input_protocol,
++                                             ThriftProtocol *output_protocol,
++                                             GError **error)
++{
++  gboolean result = TRUE;
++  ThriftTransport * transport;
++  ThriftApplicationException *xception;
++  SharedServiceGetStructArgs * args =
++    g_object_new (TYPE_SHARED_SERVICE_GET_STRUCT_ARGS, NULL);
++
++  g_object_get (input_protocol, "transport", &transport, NULL);
++
++  if ((thrift_struct_read (THRIFT_STRUCT (args), input_protocol, error) != -1) &&
++      (thrift_protocol_read_message_end (input_protocol, error) != -1) &&
++      (thrift_transport_read_end (transport, error) != FALSE))
++  {
++    gint key;
++    SharedStruct * return_value;
++    SharedServiceGetStructResult * result_struct;
++
++    g_object_get (args,
++                  "key", &key,
++                  NULL);
++
++    g_object_unref (transport);
++    g_object_get (output_protocol, "transport", &transport, NULL);
++
++    result_struct = g_object_new (TYPE_SHARED_SERVICE_GET_STRUCT_RESULT, NULL);
++    g_object_get (result_struct, "success", &return_value, NULL);
++
++    if (shared_service_handler_get_struct (SHARED_SERVICE_IF (self->handler),
++                                           &return_value,
++                                           key,
++                                           error) == TRUE)
++    {
++      g_object_set (result_struct, "success", return_value, NULL);
++      if (return_value != NULL)
++        g_object_unref (return_value);
++
++      result =
++        ((thrift_protocol_write_message_begin (output_protocol,
++                                               "getStruct",
++                                               T_REPLY,
++                                               sequence_id,
++                                               error) != -1) &&
++         (thrift_struct_write (THRIFT_STRUCT (result_struct),
++                               output_protocol,
++                               error) != -1));
++    }
++    else
++    {
++      if (*error == NULL)
++        g_warning ("SharedService.getStruct implementation returned FALSE "
++                   "but did not set an error");
++
++      xception =
++        g_object_new (THRIFT_TYPE_APPLICATION_EXCEPTION,
++                      "type",    *error != NULL ? (*error)->code :
++                                 THRIFT_APPLICATION_EXCEPTION_ERROR_UNKNOWN,
++                      "message", *error != NULL ? (*error)->message : NULL,
++                      NULL);
++      g_clear_error (error);
++
++      result =
++        ((thrift_protocol_write_message_begin (output_protocol,
++                                               "getStruct",
++                                               T_EXCEPTION,
++                                               sequence_id,
++                                               error) != -1) &&
++         (thrift_struct_write (THRIFT_STRUCT (xception),
++                               output_protocol,
++                               error) != -1));
++
++      g_object_unref (xception);
++    }
++
++    g_object_unref (result_struct);
++
++    if (result == TRUE)
++      result =
++        ((thrift_protocol_write_message_end (output_protocol, error) != -1) &&
++         (thrift_transport_write_end (transport, error) != FALSE) &&
++         (thrift_transport_flush (transport, error) != FALSE));
++  }
++  else
++    result = FALSE;
++
++  g_object_unref (transport);
++  g_object_unref (args);
++
++  return result;
++}
++
++static gboolean
++shared_service_processor_dispatch_call (ThriftDispatchProcessor *dispatch_processor,
++                                        ThriftProtocol *input_protocol,
++                                        ThriftProtocol *output_protocol,
++                                        gchar *method_name,
++                                        gint32 sequence_id,
++                                        GError **error)
++{
++  shared_service_processor_process_function_def *process_function_def;
++  gboolean dispatch_result = FALSE;
++
++  SharedServiceProcessor *self = SHARED_SERVICE_PROCESSOR (dispatch_processor);
++  ThriftDispatchProcessorClass *parent_class =
++    g_type_class_peek_parent (SHARED_SERVICE_PROCESSOR_GET_CLASS (self));
++
++  process_function_def = g_hash_table_lookup (self->process_map, method_name);
++  if (process_function_def != NULL)
++  {
++    dispatch_result = (*process_function_def->function) (self,
++                                                         sequence_id,
++                                                         input_protocol,
++                                                         output_protocol,
++                                                         error);
++  }
++  else
++  {
++    dispatch_result = parent_class->dispatch_call (dispatch_processor,
++                                                   input_protocol,
++                                                   output_protocol,
++                                                   method_name,
++                                                   sequence_id,
++                                                   error);
++  }
++
++  return dispatch_result;
++}
++
++static void
++shared_service_processor_set_property (GObject *object,
++                                       guint property_id,
++                                       const GValue *value,
++                                       GParamSpec *pspec)
++{
++  SharedServiceProcessor *self = SHARED_SERVICE_PROCESSOR (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_PROCESSOR_HANDLER:
++      if (self->handler != NULL)
++        g_object_unref (self->handler);
++      self->handler = g_value_get_object (value);
++      g_object_ref (self->handler);
++      break;
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++shared_service_processor_get_property (GObject *object,
++                                       guint property_id,
++                                       GValue *value,
++                                       GParamSpec *pspec)
++{
++  SharedServiceProcessor *self = SHARED_SERVICE_PROCESSOR (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_PROCESSOR_HANDLER:
++      g_value_set_object (value, self->handler);
++      break;
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++shared_service_processor_dispose (GObject *gobject)
++{
++  SharedServiceProcessor *self = SHARED_SERVICE_PROCESSOR (gobject);
++
++  if (self->handler != NULL)
++  {
++    g_object_unref (self->handler);
++    self->handler = NULL;
++  }
++
++  G_OBJECT_CLASS (shared_service_processor_parent_class)->dispose (gobject);
++}
++
++static void
++shared_service_processor_finalize (GObject *gobject)
++{
++  SharedServiceProcessor *self = SHARED_SERVICE_PROCESSOR (gobject);
++
++  g_hash_table_destroy (self->process_map);
++
++  G_OBJECT_CLASS (shared_service_processor_parent_class)->finalize (gobject);
++}
++
++static void
++shared_service_processor_init (SharedServiceProcessor *self)
++{
++  guint index;
++
++  self->handler = NULL;
++  self->process_map = g_hash_table_new (g_str_hash, g_str_equal);
++
++  for (index = 0; index < 1; index += 1)
++    g_hash_table_insert (self->process_map,
++                         shared_service_processor_process_function_defs[index].name,
++                         &shared_service_processor_process_function_defs[index]);
++}
++
++static void
++shared_service_processor_class_init (SharedServiceProcessorClass *cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftDispatchProcessorClass *dispatch_processor_class =
++    THRIFT_DISPATCH_PROCESSOR_CLASS (cls);
++  GParamSpec *param_spec;
++
++  gobject_class->dispose = shared_service_processor_dispose;
++  gobject_class->finalize = shared_service_processor_finalize;
++  gobject_class->set_property = shared_service_processor_set_property;
++  gobject_class->get_property = shared_service_processor_get_property;
++
++  dispatch_processor_class->dispatch_call = shared_service_processor_dispatch_call;
++  cls->dispatch_call = shared_service_processor_dispatch_call;
++
++  param_spec = g_param_spec_object ("handler",
++                                    "Service handler implementation",
++                                    "The service handler implementation "
++                                    "to which method calls are dispatched.",
++                                    TYPE_SHARED_SERVICE_HANDLER,
++                                    G_PARAM_READWRITE);
++  g_object_class_install_property (gobject_class,
++                                   PROP_SHARED_SERVICE_PROCESSOR_HANDLER,
++                                   param_spec);
++}
+diff -urN siptrace/SharedService.h siptrace1/SharedService.h
+--- siptrace/SharedService.h	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/SharedService.h	2016-03-07 16:03:38.110986217 +0800
+@@ -0,0 +1,126 @@
++/********************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  File name:      SharedService.h
++  Author: cuishiyang      Version: 0.1.0       Date: 2016/02/26
++  Description:  thrift shared service  header file
++  History:
++    1. Date:
++       Author:
++       Modification:
++    2. ...
++********************************************************************************/
++#ifndef SHARED_SERVICE_H
++#define SHARED_SERVICE_H
++
++#include <thrift/c_glib/processor/thrift_dispatch_processor.h>
++
++#include "SharedTypes.h"
++
++/* SharedService service interface */
++typedef struct _SharedServiceIf SharedServiceIf;  /* dummy object */
++
++struct _SharedServiceIfInterface
++{
++  GTypeInterface parent;
++
++  gboolean (*get_struct) (SharedServiceIf *iface, SharedStruct ** _return, const gint32 key, GError **error);
++};
++typedef struct _SharedServiceIfInterface SharedServiceIfInterface;
++
++GType shared_service_if_get_type (void);
++#define TYPE_SHARED_SERVICE_IF (shared_service_if_get_type())
++#define SHARED_SERVICE_IF(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_SERVICE_IF, SharedServiceIf))
++#define IS_SHARED_SERVICE_IF(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_SERVICE_IF))
++#define SHARED_SERVICE_IF_GET_INTERFACE(inst) (G_TYPE_INSTANCE_GET_INTERFACE ((inst), TYPE_SHARED_SERVICE_IF, SharedServiceIfInterface))
++
++gboolean shared_service_if_get_struct (SharedServiceIf *iface, SharedStruct ** _return, const gint32 key, GError **error);
++
++/* SharedService service client */
++struct _SharedServiceClient
++{
++  GObject parent;
++
++  ThriftProtocol *input_protocol;
++  ThriftProtocol *output_protocol;
++};
++typedef struct _SharedServiceClient SharedServiceClient;
++
++struct _SharedServiceClientClass
++{
++  GObjectClass parent;
++};
++typedef struct _SharedServiceClientClass SharedServiceClientClass;
++
++GType shared_service_client_get_type (void);
++#define TYPE_SHARED_SERVICE_CLIENT (shared_service_client_get_type())
++#define SHARED_SERVICE_CLIENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_SERVICE_CLIENT, SharedServiceClient))
++#define SHARED_SERVICE_CLIENT_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), TYPE_SHARED_SERVICE_CLIENT, SharedServiceClientClass))
++#define SHARED_SERVICE_IS_CLIENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_SERVICE_CLIENT))
++#define SHARED_SERVICE_IS_CLIENT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_SHARED_SERVICE_CLIENT))
++#define SHARED_SERVICE_CLIENT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHARED_SERVICE_CLIENT, SharedServiceClientClass))
++
++gboolean shared_service_client_get_struct (SharedServiceIf * iface, SharedStruct ** _return, const gint32 key, GError ** error);
++gboolean shared_service_client_send_get_struct (SharedServiceIf * iface, const gint32 key, GError ** error);
++gboolean shared_service_client_recv_get_struct (SharedServiceIf * iface, SharedStruct ** _return, GError ** error);
++void shared_service_client_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
++void shared_service_client_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
++
++/* SharedService handler (abstract base class) */
++struct _SharedServiceHandler
++{
++  GObject parent;
++};
++typedef struct _SharedServiceHandler SharedServiceHandler;
++
++struct _SharedServiceHandlerClass
++{
++  GObjectClass parent;
++
++  gboolean (*get_struct) (SharedServiceIf *iface, SharedStruct ** _return, const gint32 key, GError **error);
++};
++typedef struct _SharedServiceHandlerClass SharedServiceHandlerClass;
++
++GType shared_service_handler_get_type (void);
++#define TYPE_SHARED_SERVICE_HANDLER (shared_service_handler_get_type())
++#define SHARED_SERVICE_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_SERVICE_HANDLER, SharedServiceHandler))
++#define IS_SHARED_SERVICE_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_SERVICE_HANDLER))
++#define SHARED_SERVICE_HANDLER_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), TYPE_SHARED_SERVICE_HANDLER, SharedServiceHandlerClass))
++#define IS_SHARED_SERVICE_HANDLER_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_SHARED_SERVICE_HANDLER))
++#define SHARED_SERVICE_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHARED_SERVICE_HANDLER, SharedServiceHandlerClass))
++
++gboolean shared_service_handler_get_struct (SharedServiceIf *iface, SharedStruct ** _return, const gint32 key, GError **error);
++
++/* SharedService processor */
++struct _SharedServiceProcessor
++{
++  ThriftDispatchProcessor parent;
++
++  /* protected */
++  SharedServiceHandler *handler;
++  GHashTable *process_map;
++};
++typedef struct _SharedServiceProcessor SharedServiceProcessor;
++
++struct _SharedServiceProcessorClass
++{
++  ThriftDispatchProcessorClass parent;
++
++  /* protected */
++  gboolean (*dispatch_call) (ThriftDispatchProcessor *processor,
++                             ThriftProtocol *in,
++                             ThriftProtocol *out,
++                             gchar *fname,
++                             gint32 seqid,
++                             GError **error);
++};
++typedef struct _SharedServiceProcessorClass SharedServiceProcessorClass;
++
++GType shared_service_processor_get_type (void);
++#define TYPE_SHARED_SERVICE_PROCESSOR (shared_service_processor_get_type())
++#define SHARED_SERVICE_PROCESSOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_SERVICE_PROCESSOR, SharedServiceProcessor))
++#define IS_SHARED_SERVICE_PROCESSOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_SERVICE_PROCESSOR))
++#define SHARED_SERVICE_PROCESSOR_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), TYPE_SHARED_SERVICE_PROCESSOR, SharedServiceProcessorClass))
++#define IS_SHARED_SERVICE_PROCESSOR_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_SHARED_SERVICE_PROCESSOR))
++#define SHARED_SERVICE_PROCESSOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHARED_SERVICE_PROCESSOR, SharedServiceProcessorClass))
++
++#endif /* SHARED_SERVICE_H */
+diff -urN siptrace/SharedTypes.c siptrace1/SharedTypes.c
+--- siptrace/SharedTypes.c	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/SharedTypes.c	2016-03-07 16:03:38.106986227 +0800
+@@ -0,0 +1,767 @@
++/*************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  FileName: SharedTypes.c
++  Author: cuishiyang       Version : 0.1.0          Date: 2016/02/26
++  Description:     thrift shared types  c file      
++  Version:         0.1.0
++  History:         
++      <author>           <time>           <version >             <desc>
++      cuishiyang          2016/02/26         0.1.0        create this file 
++*************************************************************************/
++#include <math.h>
++#include <thrift/c_glib/thrift.h>
++
++#include "SharedTypes.h"
++
++enum _SharedStructProperties
++{
++  PROP_SHARED_STRUCT_0,
++  PROP_SHARED_STRUCT_KEY,
++  PROP_SHARED_STRUCT_VALUE
++};
++
++/* reads a shared_struct object */
++static gint32
++shared_struct_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  SharedStruct * this_object = SHARED_STRUCT(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      case 1:
++        if (ftype == T_I32)
++        {
++          if ((ret = thrift_protocol_read_i32 (protocol, &this_object->key, error)) < 0)
++            return -1;
++          xfer += ret;
++          this_object->__isset_key = TRUE;
++        } else {
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return -1;
++          xfer += ret;
++        }
++        break;
++      case 2:
++        if (ftype == T_STRING)
++        {
++          if (this_object->value != NULL)
++          {
++            g_free(this_object->value);
++            this_object->value = NULL;
++          }
++
++          if ((ret = thrift_protocol_read_string (protocol, &this_object->value, error)) < 0)
++            return -1;
++          xfer += ret;
++          this_object->__isset_value = TRUE;
++        } else {
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return -1;
++          xfer += ret;
++        }
++        break;
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++shared_struct_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  SharedStruct * this_object = SHARED_STRUCT(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "SharedStruct", error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_begin (protocol, "key", T_I32, 1, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_i32 (protocol, this_object->key, error)) < 0)
++    return -1;
++  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_begin (protocol, "value", T_STRING, 2, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_string (protocol, this_object->value, error)) < 0)
++    return -1;
++  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void
++shared_struct_set_property (GObject *object,
++                            guint property_id,
++                            const GValue *value,
++                            GParamSpec *pspec)
++{
++  SharedStruct *self = SHARED_STRUCT (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_STRUCT_KEY:
++      self->key = g_value_get_int (value);
++      self->__isset_key = TRUE;
++      break;
++
++    case PROP_SHARED_STRUCT_VALUE:
++      if (self->value != NULL)
++        g_free (self->value);
++      self->value = g_value_dup_string (value);
++      self->__isset_value = TRUE;
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++shared_struct_get_property (GObject *object,
++                            guint property_id,
++                            GValue *value,
++                            GParamSpec *pspec)
++{
++  SharedStruct *self = SHARED_STRUCT (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_STRUCT_KEY:
++      g_value_set_int (value, self->key);
++      break;
++
++    case PROP_SHARED_STRUCT_VALUE:
++      g_value_set_string (value, self->value);
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void 
++shared_struct_instance_init (SharedStruct * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++  object->key = 0;
++  object->__isset_key = FALSE;
++  object->value = NULL;
++  object->__isset_value = FALSE;
++}
++
++static void 
++shared_struct_finalize (GObject *object)
++{
++  SharedStruct *tobject = SHARED_STRUCT (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++  if (tobject->value != NULL)
++  {
++    g_free(tobject->value);
++    tobject->value = NULL;
++  }
++}
++
++static void
++shared_struct_class_init (SharedStructClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = shared_struct_read;
++  struct_class->write = shared_struct_write;
++
++  gobject_class->finalize = shared_struct_finalize;
++  gobject_class->get_property = shared_struct_get_property;
++  gobject_class->set_property = shared_struct_set_property;
++
++  g_object_class_install_property
++    (gobject_class,
++     PROP_SHARED_STRUCT_KEY,
++     g_param_spec_int ("key",
++                       NULL,
++                       NULL,
++                       G_MININT32,
++                       G_MAXINT32,
++                       0,
++                       G_PARAM_READWRITE));
++
++  g_object_class_install_property
++    (gobject_class,
++     PROP_SHARED_STRUCT_VALUE,
++     g_param_spec_string ("value",
++                          NULL,
++                          NULL,
++                          NULL,
++                          G_PARAM_READWRITE));
++}
++
++GType
++shared_struct_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (SharedStructClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) shared_struct_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (SharedStruct),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) shared_struct_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "SharedStructType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
++/* constants */
++
++enum _SharedServiceGetStructArgsProperties
++{
++  PROP_SHARED_SERVICE_GET_STRUCT_ARGS_0,
++  PROP_SHARED_SERVICE_GET_STRUCT_ARGS_KEY
++};
++
++/* reads a shared_service_get_struct_args object */
++static gint32
++shared_service_get_struct_args_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  SharedServiceGetStructArgs * this_object = SHARED_SERVICE_GET_STRUCT_ARGS(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      case 1:
++        if (ftype == T_I32)
++        {
++          if ((ret = thrift_protocol_read_i32 (protocol, &this_object->key, error)) < 0)
++            return -1;
++          xfer += ret;
++          this_object->__isset_key = TRUE;
++        } else {
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return -1;
++          xfer += ret;
++        }
++        break;
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++shared_service_get_struct_args_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  SharedServiceGetStructArgs * this_object = SHARED_SERVICE_GET_STRUCT_ARGS(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "SharedServiceGetStructArgs", error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_begin (protocol, "key", T_I32, 1, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_i32 (protocol, this_object->key, error)) < 0)
++    return -1;
++  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void
++shared_service_get_struct_args_set_property (GObject *object,
++                                             guint property_id,
++                                             const GValue *value,
++                                             GParamSpec *pspec)
++{
++  SharedServiceGetStructArgs *self = SHARED_SERVICE_GET_STRUCT_ARGS (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_GET_STRUCT_ARGS_KEY:
++      self->key = g_value_get_int (value);
++      self->__isset_key = TRUE;
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++shared_service_get_struct_args_get_property (GObject *object,
++                                             guint property_id,
++                                             GValue *value,
++                                             GParamSpec *pspec)
++{
++  SharedServiceGetStructArgs *self = SHARED_SERVICE_GET_STRUCT_ARGS (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_GET_STRUCT_ARGS_KEY:
++      g_value_set_int (value, self->key);
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void 
++shared_service_get_struct_args_instance_init (SharedServiceGetStructArgs * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++  object->key = 0;
++  object->__isset_key = FALSE;
++}
++
++static void 
++shared_service_get_struct_args_finalize (GObject *object)
++{
++  SharedServiceGetStructArgs *tobject = SHARED_SERVICE_GET_STRUCT_ARGS (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++}
++
++static void
++shared_service_get_struct_args_class_init (SharedServiceGetStructArgsClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = shared_service_get_struct_args_read;
++  struct_class->write = shared_service_get_struct_args_write;
++
++  gobject_class->finalize = shared_service_get_struct_args_finalize;
++  gobject_class->get_property = shared_service_get_struct_args_get_property;
++  gobject_class->set_property = shared_service_get_struct_args_set_property;
++
++  g_object_class_install_property
++    (gobject_class,
++     PROP_SHARED_SERVICE_GET_STRUCT_ARGS_KEY,
++     g_param_spec_int ("key",
++                       NULL,
++                       NULL,
++                       G_MININT32,
++                       G_MAXINT32,
++                       0,
++                       G_PARAM_READWRITE));
++}
++
++GType
++shared_service_get_struct_args_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (SharedServiceGetStructArgsClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) shared_service_get_struct_args_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (SharedServiceGetStructArgs),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) shared_service_get_struct_args_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "SharedServiceGetStructArgsType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
++enum _SharedServiceGetStructResultProperties
++{
++  PROP_SHARED_SERVICE_GET_STRUCT_RESULT_0,
++  PROP_SHARED_SERVICE_GET_STRUCT_RESULT_SUCCESS
++};
++
++/* reads a shared_service_get_struct_result object */
++static gint32
++shared_service_get_struct_result_read (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++  gchar *name = NULL;
++  ThriftType ftype;
++  gint16 fid;
++  guint32 len = 0;
++  gpointer data = NULL;
++  SharedServiceGetStructResult * this_object = SHARED_SERVICE_GET_STRUCT_RESULT(object);
++
++  /* satisfy -Wall in case these aren't used */
++  THRIFT_UNUSED_VAR (len);
++  THRIFT_UNUSED_VAR (data);
++  THRIFT_UNUSED_VAR (this_object);
++
++  /* read the struct begin marker */
++  if ((ret = thrift_protocol_read_struct_begin (protocol, &name, error)) < 0)
++  {
++    if (name) g_free (name);
++    return -1;
++  }
++  xfer += ret;
++  if (name) g_free (name);
++  name = NULL;
++
++  /* read the struct fields */
++  while (1)
++  {
++    /* read the beginning of a field */
++    if ((ret = thrift_protocol_read_field_begin (protocol, &name, &ftype, &fid, error)) < 0)
++    {
++      if (name) g_free (name);
++      return -1;
++    }
++    xfer += ret;
++    if (name) g_free (name);
++    name = NULL;
++
++    /* break if we get a STOP field */
++    if (ftype == T_STOP)
++    {
++      break;
++    }
++
++    switch (fid)
++    {
++      case 0:
++        if (ftype == T_STRUCT)
++        {
++          if ((ret = thrift_struct_read (THRIFT_STRUCT (this_object->success), protocol, error)) < 0)
++          {
++            return -1;
++          }
++          xfer += ret;
++          this_object->__isset_success = TRUE;
++        } else {
++          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++            return -1;
++          xfer += ret;
++        }
++        break;
++      default:
++        if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
++          return -1;
++        xfer += ret;
++        break;
++    }
++    if ((ret = thrift_protocol_read_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++
++  if ((ret = thrift_protocol_read_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static gint32
++shared_service_get_struct_result_write (ThriftStruct *object, ThriftProtocol *protocol, GError **error)
++{
++  gint32 ret;
++  gint32 xfer = 0;
++
++  SharedServiceGetStructResult * this_object = SHARED_SERVICE_GET_STRUCT_RESULT(object);
++  THRIFT_UNUSED_VAR (this_object);
++  if ((ret = thrift_protocol_write_struct_begin (protocol, "SharedServiceGetStructResult", error)) < 0)
++    return -1;
++  xfer += ret;
++  if (this_object->__isset_success == TRUE) {
++    if ((ret = thrift_protocol_write_field_begin (protocol, "success", T_STRUCT, 0, error)) < 0)
++      return -1;
++    xfer += ret;
++    if ((ret = thrift_struct_write (THRIFT_STRUCT (this_object->success), protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++
++    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
++      return -1;
++    xfer += ret;
++  }
++  if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++  if ((ret = thrift_protocol_write_struct_end (protocol, error)) < 0)
++    return -1;
++  xfer += ret;
++
++  return xfer;
++}
++
++static void
++shared_service_get_struct_result_set_property (GObject *object,
++                                               guint property_id,
++                                               const GValue *value,
++                                               GParamSpec *pspec)
++{
++  SharedServiceGetStructResult *self = SHARED_SERVICE_GET_STRUCT_RESULT (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_GET_STRUCT_RESULT_SUCCESS:
++      if (self->success != NULL)
++        g_object_unref (self->success);
++      self->success = g_value_dup_object (value);
++      self->__isset_success = TRUE;
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void
++shared_service_get_struct_result_get_property (GObject *object,
++                                               guint property_id,
++                                               GValue *value,
++                                               GParamSpec *pspec)
++{
++  SharedServiceGetStructResult *self = SHARED_SERVICE_GET_STRUCT_RESULT (object);
++
++  switch (property_id)
++  {
++    case PROP_SHARED_SERVICE_GET_STRUCT_RESULT_SUCCESS:
++      g_value_set_object (value, self->success);
++      break;
++
++    default:
++      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
++      break;
++  }
++}
++
++static void 
++shared_service_get_struct_result_instance_init (SharedServiceGetStructResult * object)
++{
++  /* satisfy -Wall */
++  THRIFT_UNUSED_VAR (object);
++  object->success = g_object_new (TYPE_SHARED_STRUCT, NULL);
++  object->__isset_success = FALSE;
++}
++
++static void 
++shared_service_get_struct_result_finalize (GObject *object)
++{
++  SharedServiceGetStructResult *tobject = SHARED_SERVICE_GET_STRUCT_RESULT (object);
++
++  /* satisfy -Wall in case we don't use tobject */
++  THRIFT_UNUSED_VAR (tobject);
++  if (tobject->success != NULL)
++  {
++    g_object_unref(tobject->success);
++    tobject->success = NULL;
++  }
++}
++
++static void
++shared_service_get_struct_result_class_init (SharedServiceGetStructResultClass * cls)
++{
++  GObjectClass *gobject_class = G_OBJECT_CLASS (cls);
++  ThriftStructClass *struct_class = THRIFT_STRUCT_CLASS (cls);
++
++  struct_class->read = shared_service_get_struct_result_read;
++  struct_class->write = shared_service_get_struct_result_write;
++
++  gobject_class->finalize = shared_service_get_struct_result_finalize;
++  gobject_class->get_property = shared_service_get_struct_result_get_property;
++  gobject_class->set_property = shared_service_get_struct_result_set_property;
++
++  g_object_class_install_property
++    (gobject_class,
++     PROP_SHARED_SERVICE_GET_STRUCT_RESULT_SUCCESS,
++     g_param_spec_object ("success",
++                         NULL,
++                         NULL,
++                         TYPE_SHARED_STRUCT,
++                         G_PARAM_READWRITE));
++}
++
++GType
++shared_service_get_struct_result_get_type (void)
++{
++  static GType type = 0;
++
++  if (type == 0) 
++  {
++    static const GTypeInfo type_info = 
++    {
++      sizeof (SharedServiceGetStructResultClass),
++      NULL, /* base_init */
++      NULL, /* base_finalize */
++      (GClassInitFunc) shared_service_get_struct_result_class_init,
++      NULL, /* class_finalize */
++      NULL, /* class_data */
++      sizeof (SharedServiceGetStructResult),
++      0, /* n_preallocs */
++      (GInstanceInitFunc) shared_service_get_struct_result_instance_init,
++      NULL, /* value_table */
++    };
++
++    type = g_type_register_static (THRIFT_TYPE_STRUCT, 
++                                   "SharedServiceGetStructResultType",
++                                   &type_info, 0);
++  }
++
++  return type;
++}
++
+diff -urN siptrace/SharedTypes.h siptrace1/SharedTypes.h
+--- siptrace/SharedTypes.h	1970-01-01 08:00:00.000000000 +0800
++++ siptrace1/SharedTypes.h	2016-03-07 16:03:38.110986217 +0800
+@@ -0,0 +1,103 @@
++/********************************************************************************
++  Copyright (C), 2016-2017, Everyoo Co., Ltd.
++  File name:      SharedTypes.h
++  Author: cuishiyang      Version: 0.1.0       Date: 2016/02/26
++  Description:  thrift shared types header file
++  History:
++    1. Date:
++       Author:
++       Modification:
++    2. ...
++********************************************************************************/
++#ifndef SHARED_TYPES_H
++#define SHARED_TYPES_H
++
++/* base includes */
++#include <glib-object.h>
++#include <thrift/c_glib/thrift_struct.h>
++#include <thrift/c_glib/protocol/thrift_protocol.h>
++
++/* custom thrift includes */
++
++/* begin types */
++
++/* struct SharedStruct */
++struct _SharedStruct
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++  gint32 key;
++  gboolean __isset_key;
++  gchar * value;
++  gboolean __isset_value;
++};
++typedef struct _SharedStruct SharedStruct;
++
++struct _SharedStructClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _SharedStructClass SharedStructClass;
++
++GType shared_struct_get_type (void);
++#define TYPE_SHARED_STRUCT (shared_struct_get_type())
++#define SHARED_STRUCT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_STRUCT, SharedStruct))
++#define SHARED_STRUCT_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_SHARED_STRUCT, SharedStructClass))
++#define IS_SHARED_STRUCT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_STRUCT))
++#define IS_SHARED_STRUCT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_SHARED_STRUCT))
++#define SHARED_STRUCT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHARED_STRUCT, SharedStructClass))
++
++/* constants */
++
++/* struct SharedServiceGetStructArgs */
++struct _SharedServiceGetStructArgs
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++  gint32 key;
++  gboolean __isset_key;
++};
++typedef struct _SharedServiceGetStructArgs SharedServiceGetStructArgs;
++
++struct _SharedServiceGetStructArgsClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _SharedServiceGetStructArgsClass SharedServiceGetStructArgsClass;
++
++GType shared_service_get_struct_args_get_type (void);
++#define TYPE_SHARED_SERVICE_GET_STRUCT_ARGS (shared_service_get_struct_args_get_type())
++#define SHARED_SERVICE_GET_STRUCT_ARGS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_SERVICE_GET_STRUCT_ARGS, SharedServiceGetStructArgs))
++#define SHARED_SERVICE_GET_STRUCT_ARGS_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_SHARED_SERVICE_GET_STRUCT_ARGS, SharedServiceGetStructArgsClass))
++#define IS_SHARED_SERVICE_GET_STRUCT_ARGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_SERVICE_GET_STRUCT_ARGS))
++#define IS_SHARED_SERVICE_GET_STRUCT_ARGS_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_SHARED_SERVICE_GET_STRUCT_ARGS))
++#define SHARED_SERVICE_GET_STRUCT_ARGS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHARED_SERVICE_GET_STRUCT_ARGS, SharedServiceGetStructArgsClass))
++
++/* struct SharedServiceGetStructResult */
++struct _SharedServiceGetStructResult
++{ 
++  ThriftStruct parent; 
++
++  /* public */
++  SharedStruct * success;
++  gboolean __isset_success;
++};
++typedef struct _SharedServiceGetStructResult SharedServiceGetStructResult;
++
++struct _SharedServiceGetStructResultClass
++{
++  ThriftStructClass parent;
++};
++typedef struct _SharedServiceGetStructResultClass SharedServiceGetStructResultClass;
++
++GType shared_service_get_struct_result_get_type (void);
++#define TYPE_SHARED_SERVICE_GET_STRUCT_RESULT (shared_service_get_struct_result_get_type())
++#define SHARED_SERVICE_GET_STRUCT_RESULT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHARED_SERVICE_GET_STRUCT_RESULT, SharedServiceGetStructResult))
++#define SHARED_SERVICE_GET_STRUCT_RESULT_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), _TYPE_SHARED_SERVICE_GET_STRUCT_RESULT, SharedServiceGetStructResultClass))
++#define IS_SHARED_SERVICE_GET_STRUCT_RESULT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHARED_SERVICE_GET_STRUCT_RESULT))
++#define IS_SHARED_SERVICE_GET_STRUCT_RESULT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_SHARED_SERVICE_GET_STRUCT_RESULT))
++#define SHARED_SERVICE_GET_STRUCT_RESULT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHARED_SERVICE_GET_STRUCT_RESULT, SharedServiceGetStructResultClass))
++
++#endif /* SHARED_TYPES_H */
+diff -urN siptrace/siptrace.c siptrace1/siptrace.c
+--- siptrace/siptrace.c	2016-03-07 16:04:44.034819022 +0800
++++ siptrace1/siptrace.c	2016-03-07 16:03:38.106986227 +0800
+@@ -27,11 +27,12 @@
+  *
+  */
+ 
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <time.h>
++#include <json-c/json.h>
++//#include <uuid/uuid.h>
+ #include "../../sr_module.h"
+ #include "../../dprint.h"
+ #include "../../ut.h"
+@@ -50,13 +51,30 @@
+ #include "../../modules/sl/sl.h"
+ #include "../../str.h"
+ #include "../../onsend.h"
+-
++#include  "../../lib/cds/dstring.h"
++#include  "../../lib/cds/memory.h"
++#include  "../../lib/cds/sstr.h"
++#include <curl/curl.h>
+ #include "../../modules/sipcapture/hep.h"
++#include "../../modules/msilo/api.h"
++//#include "../../modules/usrloc/urecord.h"
++
++#include <glib-object.h>
++#include <thrift/c_glib/protocol/thrift_binary_protocol.h>
++#include <thrift/c_glib/transport/thrift_buffered_transport.h>
++#include <thrift/c_glib/transport/thrift_socket.h>
++#include "CommunicateInterface.h"
+ 
+ #ifdef STATISTICS
+ #include "../../lib/kcore/statistics.h"
+ #endif
+ 
++#define MAX_NUM  1024
++#define NR_KEYS 12
++#define SIP_TRACE_TABLE_VERSION 4
++#define XHEADERS_BUFSIZE 512
++msilo_api_t  pmsilo;
++
+ MODULE_VERSION
+ 
+ struct _siptrace_data {
+@@ -91,6 +109,7 @@
+ static int child_init(int rank);
+ static void destroy(void);
+ static int sip_trace(struct sip_msg*, struct dest_info*, char*);
++static int Evy_webCtrl(struct sip_msg*, char*, char*);
+ static int fixup_siptrace(void ** param, int param_no);
+ 
+ static int sip_trace_store_db(struct _siptrace_data* sto);
+@@ -106,7 +125,6 @@
+ static int trace_send_hep_duplicate(str *body, str *from, str *to, struct dest_info*);
+ static int pipport2su (char *pipport, union sockaddr_union *tmp_su, unsigned int *proto);
+ 
+-
+ static struct mi_root* sip_trace_mi(struct mi_root* cmd, void* param );
+ 
+ static str db_url             = str_init(DEFAULT_DB_URL);
+@@ -124,10 +142,6 @@
+ static str time_us_column     = str_init("time_us");     /* 10 */
+ static str totag_column       = str_init("totag");       /* 11 */
+ 
+-#define NR_KEYS 12
+-#define SIP_TRACE_TABLE_VERSION 4
+-
+-#define XHEADERS_BUFSIZE 512
+ 
+ int trace_flag = 0;
+ int trace_on   = 0;
+@@ -166,6 +180,8 @@
+ 
+ int hep_mode_on = 0;
+ 
++gint32 return_value;
++
+ db1_con_t *db_con = NULL; 		/*!< database connection */
+ db_func_t db_funcs;      		/*!< Database functions */
+ 
+@@ -175,6 +191,7 @@
+ static cmd_export_t cmds[] = {
+ 	{"sip_trace", (cmd_function)sip_trace, 0, 0, 0, ANY_ROUTE},
+     {"sip_trace", (cmd_function)sip_trace, 1, fixup_siptrace, 0, ANY_ROUTE},
++	{"Evy_webCtrl", (cmd_function)Evy_webCtrl, 1, 0, 0, ANY_ROUTE},
+ 	{0, 0, 0, 0, 0, 0}
+ };
+ 
+@@ -222,7 +239,6 @@
+ 	{ 0, 0, 0, 0, 0}
+ };
+ 
+-
+ #ifdef STATISTICS
+ stat_var* siptrace_req;
+ stat_var* siptrace_rpl;
+@@ -254,6 +270,11 @@
+ 	child_init  /*!< child initialization function */
+ };
+ 
++/* Parse Saccording to FORMAT and store binary time information in TP.
++   The return value is a pointer to the firstunparsed character in S.  */
++extern char*strptime (__const char *__restrict __s,
++           __const char *__restrict __fmt,struct tm *__tp)
++     __THROW;
+ 
+ /*! \brief Initialize siptrace module */
+ static int mod_init(void)
+@@ -308,7 +329,7 @@
+ 			LM_ERR("unable to bind database module\n");
+ 			return -1;
+ 		}
+-		if (trace_to_database_flag && !DB_CAPABILITY(db_funcs, DB_CAP_INSERT))
++		if (trace_to_database_flag && !DB_CAPABILITY(db_funcs, DB_CAP_QUERY))
+ 		{
+ 			LM_ERR("database modules does not provide all functions needed"
+ 					" by module\n");
+@@ -322,7 +343,6 @@
+                   return -1;
+         }                                          
+ 
+-
+ 	trace_on_flag = (int*)shm_malloc(sizeof(int));
+ 	if(trace_on_flag==NULL) {
+ 		LM_ERR("no more shm memory left\n");
+@@ -375,6 +395,7 @@
+ 
+ 	if(dup_uri_str.s!=0)
+ 	{
++		#if 0
+ 		dup_uri = (struct sip_uri *)pkg_malloc(sizeof(struct sip_uri));
+ 		if(dup_uri==0)
+ 		{
+@@ -387,6 +408,9 @@
+ 			LM_ERR("bad dup uri\n");
+ 			return -1;
+ 		}
++		#else
++			dup_uri = NULL;
++		#endif
+ 	}
+ 
+ 	if(force_send_sock_str.s!=0)
+@@ -448,11 +472,12 @@
+ 		trace_table_avp.n = 0;
+ 		trace_table_avp_type = 0;
+ 	}
++ 
++	load_msilo_api(&pmsilo);
+ 
+ 	return 0;
+ }
+ 
+-
+ static int child_init(int rank)
+ {
+ 	if (rank==PROC_INIT || rank==PROC_MAIN || rank==PROC_TCP_MAIN)
+@@ -465,18 +490,11 @@
+ 			LM_ERR("unable to connect to database. Please check configuration.\n");
+ 			return -1;
+ 		}
+-		if (db_check_table_version(&db_funcs, db_con, &siptrace_table,
+-					   SIP_TRACE_TABLE_VERSION) < 0) {
+-			LM_ERR("error during table version check\n");
+-			db_funcs.close(db_con);		
+-			return -1;
+-		}
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-
+ static void destroy(void)
+ {
+ 	if(trace_to_database_flag!=NULL && *trace_to_database_flag!=0) {
+@@ -762,6 +780,7 @@
+ 
+ static int sip_trace_store_db(struct _siptrace_data *sto)
+ {
++	/*判断数据库连接是否成功*/
+ 	if(db_con==NULL) {
+ 		LM_DBG("database connection not initialized\n");
+ 		return -1;
+@@ -955,10 +974,205 @@
+ 	return 0;
+ }
+ 
++int callbackFunc(int result, void* userdata) {
++
++	LM_ERR("333333333333333333333333333333333333\n");
++	return 4;
++}
++
++static int Evy_parse_webCtrl(struct json_object* json_data,char *webMessage) {
++
++	str webStr_userid;
++	str webStr_gatewayid;
++	str webStr_cmd;
++	void* userID;
++
++	struct json_object* webJson_userid = NULL;
++	struct json_object* webJson_gatewayid = NULL;
++	//struct json_object* webJson_cmd = NULL;
++	#if 0
++        if (unlikely(json_object_object_get_ex(json_data, "userid", &webJson_userid)) == 0) {
++		LM_ERR("Error:webJson_userid = NULL\n");
++		return -1;
++	}
++        #endif
++	if (unlikely(json_object_object_get_ex(json_data, "gatewayid", &webJson_gatewayid)) == 0) {
++	
++		LM_ERR("Error:webJson_gatewayid = NULL\n");
++		return -1;
++	}
++	
++	webStr_userid.s = (char*)json_object_get_string(webJson_userid);
++	webStr_userid.len = json_object_get_string_len(webJson_userid);
++
++	webStr_gatewayid.s = (char*)json_object_get_string(webJson_gatewayid);
++	webStr_gatewayid.len = json_object_get_string_len(webJson_gatewayid);
++	
++	webStr_cmd.s = webMessage;
++	webStr_cmd.len = strlen(webMessage);
++
++	LM_DBG("~~~~~~~~~~~~~~~~~~~~~~~~webStr_userid = %.*s\n",webStr_userid.len,webStr_userid.s);
++	LM_DBG("~~~~~~~~~~~~~~~~~~~~~~~~webStr_gatewayid = %.*s\n",webStr_gatewayid.len,webStr_gatewayid.s);
++	LM_DBG("~~~~~~~~~~~~~~~~~~~~~~~~webStr_cmd = %.*s\n",webStr_cmd.len,webStr_cmd.s);
++
++	userID = (void*)webStr_userid.s;
++	pmsilo.m_dump2(&webStr_userid, &webStr_gatewayid, &webStr_cmd, callbackFunc, userID);
++
++
++	return 3;
++
++}
++
++static int Evy_webCtrl(struct sip_msg* msg, char* webJson, char*  param){
++
++	char* webMsg = webJson;
++	int webMsg_len = strlen(webMsg);
++	LM_DBG("*********webMsg = %s\n", webMsg);
++	LM_DBG("*********webMsg_len = %d\n",webMsg_len);
++	LM_DBG("66666666666____Evy_webCtrl____6666666666\n");
++	
++	int ret = -1;
++	int webMessage_type = -1;
++	struct json_object* json_type = NULL;
++	struct json_object* json_body = NULL;
++
++	json_body = json_tokener_parse(webJson);
++	if (unlikely(json_body == NULL)) {
++	
++		LM_ERR("Error:json_body = NULL!!!\n");
++		goto error;
++	}
++	if (unlikely(json_object_object_get_ex(json_body,"type",&json_type) == 0)) {
++	
++		LM_ERR("Error:not available message!!!\n");
++		goto error;
++	}
++	webMessage_type = json_object_get_int(json_type);
++	switch(webMessage_type) {
++	
++		case 12:
++			ret = Evy_parse_webCtrl(json_body,webMsg);
++			break;
++		case 13:
++			LM_DBG("case = 13\n");
++			break;
++		default:
++			LM_DBG("not available type!!!\n");
++			break;
++	}
++
++	json_object_put(json_body);
++	return ret;
++error:
++	json_object_put(json_body);
++	return -1;
++}
++
++static int Evy_thrift_transfer(int length, char *buf) {
++  GError *error = NULL;
++  int exit_status = 0;
++  
++  ThriftSocket *socket;
++  ThriftTransport *transport;
++  ThriftProtocol *protocol;
++  CalculatorIf *client;
++
++#if (!GLIB_CHECK_VERSION (2, 36, 0))
++  g_type_init ();
++#endif
++
++  socket    = g_object_new (THRIFT_TYPE_SOCKET,
++                            "hostname",  "localhost",
++                            "port",      9090,
++                            NULL);
++  transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
++                            "transport", socket,
++                            NULL);
++  protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
++                            "transport", transport,
++                            NULL);
++  thrift_transport_open (transport, &error);
++
++
++  /* In the C (GLib) implementation of Thrift, service methods on the
++     server are accessed via a generated client class that implements
++     the service interface. In this tutorial, we access a Calculator
++     service through an instance of CalculatorClient, which implements
++     CalculatorIf. */
++  client = g_object_new (TYPE_CALCULATOR_CLIENT,
++                         "input_protocol",  protocol,
++                         "output_protocol", protocol,
++                         NULL);
++
++  /* Each of the client methods requires at least two parameters: A
++     pointer to the client-interface implementation (the client
++     object), and a handle to a GError structure to receive
++     information about any error that occurs.
++
++     On success, client methods return TRUE. A return value of FALSE
++     indicates an error occurred and the error parameter has been
++     set. */
++  if (!error && calculator_if_ping (client, &error)) {
++    puts ("ping()");
++  }
++
++  /* Service methods that return a value do so by passing the result
++     back via an output parameter (here, "return_value"). */
++  if (!error && calculator_if_message (client, &return_value, buf, &error)) {
++    printf ("return = %d\n", return_value);
++  }
++
++  /* Thrift structs are implemented as GObjects, with each of the
++     struct's members exposed as an object property. */
++    /* Struct objects can be reused across method invocations. */
++
++  if (error) {
++    printf ("ERROR: %s\n", error->message);
++    g_clear_error (&error);
++
++    exit_status = 1;
++  }
++
++  thrift_transport_close (transport, NULL);
++
++  g_object_unref (client);
++  g_object_unref (protocol);
++  g_object_unref (transport);
++  g_object_unref (socket);
++
++  return exit_status;
++}
++
+ static int sip_trace(struct sip_msg *msg, struct dest_info * dst, char *dir)
+ {
+ 	struct _siptrace_data sto;
+ 	struct onsend_info *snd_inf = NULL;
++	str msg_body;
++	msg_body.s = get_body(msg);//get the content of message_body
++	if (msg_body.s==0) {
++	
++		LM_ERR("failed to extract body from msg!\n");
++		return -1;
++	}
++	msg_body.len = get_content_length(msg);//get the length of message_body
++	LM_DBG("%s, %d\n",msg_body.s, msg_body.len);
++
++	Evy_thrift_transfer(msg_body.len, msg_body.s);
++	int ret = return_value;
++	LM_DBG("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
++	LM_DBG("ret = %d\n",ret);
++	LM_DBG("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
++    
++	 if (ret == 1) {
++		LM_DBG("authentication success!\n");
++		return 1;
++	}else if (ret == -2) {
++		LM_DBG("authentication failed!\n");
++		return 2;
++	}else if (ret == -3) {
++		LM_DBG("message content is wrong!\n");
++		return 3;
++	}
+ 
+ 	if (dst){
+ 	    if (dst->send_sock == 0){
+@@ -1561,8 +1775,129 @@
+ 	}
+ }
+ 
+-static int trace_send_duplicate(char *buf, int len, struct dest_info *dst2)
++static size_t write_data_func(void *ptr, size_t size, size_t nmemb, void *stream)
++{
++	int s = size * nmemb;
++	if (s != 0) {
++		if (dstr_append((dstring_t*)stream, ptr, s) != 0) {
++			LM_ERR("can't append %d bytes into data buffer\n", s);
++			return 0;
++		}
++	}
++	return s;
++}
++
++int curl_post(const char* url,char* buf,int size,dstring_t* resultdata)
+ {
++
++	CURLcode res = -1;
++	static CURL *handle = NULL;
++	
++	char *auth = NULL;
++	//char* resultstr = NULL;
++	int i;
++	long auth_methods;
++	
++	if (!url) {
++		LM_ERR("BUG: no uri given\n");
++		return -1;
++	}
++	if (!buf) {
++		LM_ERR("BUG: no buf given\n");
++		return -1;
++	}
++
++	i = 0;
++#ifdef HTTP_AUTH
++	i +=strlen("test");
++	i += strlen("test");
++#endif
++	if (i > 0) {
++		/* do authentication */
++		auth = (char *)cds_malloc(i + 2);
++		if (!auth) return -1;
++		sprintf(auth, "%s:%s", "wrt","wrt12");
++	}
++
++	auth_methods = CURLAUTH_BASIC | CURLAUTH_DIGEST;
++	if (!handle) handle = curl_easy_init(); 
++	if (handle) {
++		struct curl_slist *chunk = NULL;
++		//dstr_init(&data,size);
++		//dstr_append(&data,buf,size);
++		//curl_easy_setopt(handle, CURLOPT_READFUNCTION, read_callback);
++
++		/* enable uploading */
++	//	curl_easy_setopt(handle, CURLOPT_UPLOAD, 1L);
++
++		/* HTTP PUT please */
++		curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data_func);
++		curl_easy_setopt(handle, CURLOPT_WRITEDATA, resultdata);
++
++		curl_easy_setopt(handle, CURLOPT_POSTFIELDS, buf);
++		curl_easy_setopt(handle,CURLOPT_POSTFIELDSIZE,size);
++
++		/* specify target URL, and note that this URL should include a file
++		name, not only a directory */
++		curl_easy_setopt(handle, CURLOPT_URL, url);
++
++		/* now specify which file to upload */
++		//curl_easy_setopt(handle, CURLOPT_READDATA, &data);
++
++		
++		
++		chunk = curl_slist_append(chunk, "content-Type: json/sip");
++
++		chunk = curl_slist_append(chunk, "content-Encoding: UTF-8");
++		curl_easy_setopt(handle,CURLOPT_HTTPHEADER,chunk);
++#ifdef HTTP_AUTH
++		/* auth */
++		curl_easy_setopt(handle, CURLOPT_HTTPAUTH, auth_methods); /* TODO possibility of selection */
++		curl_easy_setopt(handle, CURLOPT_NETRC, CURL_NETRC_IGNORED);
++		curl_easy_setopt(handle, CURLOPT_USERPWD, auth);
++#endif
++		/* SSL */
++		//if (params) {
++		//	if (params->enable_unverified_ssl_peer) {
++		//		curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0);
++		//		curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
++			//}
++		//}
++
++		/* provide the size of the upload, we specicially typecast the value
++		to curl_off_t since we must be sure to use the correct data size */
++		//curl_easy_setopt(handle, CURLOPT_INFILESIZE_LARGE,
++		//	(curl_off_t)size);
++
++		/* Now run off and do what you've been told! */
++		res = curl_easy_perform(handle);
++
++		/* always cleanup */
++		/*curl_easy_cleanup(handle);*/
++	}
++	
++
++	
++	if (auth) cds_free(auth);
++	return res;
++}
++
++
++static int trace_send_duplicate(char *buf, int len,struct dest_info *dst2)
++{
++
++	char uri[256];
++	str_t res;
++	dstring_t result;
++	dstr_init(&result,4096);
++	memset(uri,0,256);
++	memcpy(uri,dup_uri_str.s,dup_uri_str.len);
++	LM_DBG("HTTP = %.*s\n",dup_uri_str.len,dup_uri_str.s);
++	curl_post(uri,buf,len,&result);
++	dstr_get_str(&result,&res);
++	
++	//LM_MSG("result:%.*s \n",res.len,res.s);
++	LM_INFO("trace_send_duplicate......result = %.*s\n",res.len,res.s);
+ 	struct dest_info dst;
+ 	struct proxy_l * p = NULL;
+ 

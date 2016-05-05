@@ -1,0 +1,31 @@
+
+#ye{
+	margin-bottom: 15px;
+	float:left;
+	margin-top:50px;
+}
+.yema{
+	padding: 3px;
+	margin: 3px;
+	text-align: center;
+	font-family:"微软雅黑";
+	font-size: 12px;
+	float:left;}
+.yema span shou{
+	border: 1px solid #eee;
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	color: #ec6911;}
+.yema span one{
+	border: 1px solid #000099;
+	background-color: #ec6911;
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	color: #FFFFFF;
+	text-decoration: none;}
+.yema a{
+	border: 1px solid #aaaadd;
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	color: #000099;
+	text-decoration: none;}

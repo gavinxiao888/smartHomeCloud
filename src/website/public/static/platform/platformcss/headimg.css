@@ -1,0 +1,138 @@
+<style>
+//爱悠账号的css
+ html, body, *
+ {
+ font-family: "Microsoft YaHei" !important;
+ margin:0;
+padding:0;
+font-size:12px; }
+a
+{
+color:black;font-family: "Microsoft YaHei" !important;
+text-decoration:none;
+}
+a:hover
+{
+color:black;text-decoration:none;
+}
+a:visited
+{
+color:black;
+}
+a:active
+{
+color:black;
+}
+.head
+{
+height:80px;
+background-color:#ececec;
+width:100%;
+min-width:1000px;font-family: "Microsoft YaHei" !important;
+}
+.head img
+{
+padding-top:25px;
+padding-left:27%;
+}
+.content
+{
+	background:#fafafa;
+
+	width:45%;
+	min-width:750px;
+	position:relative;
+	margin:0 auto;	
+	margin-top:70px; 
+	border:1px solid #ececec;
+}
+.cont-head
+{
+	height:40px;
+	width:100%;
+	border-bottom:2px dotted #ececec;
+}
+.cont-head h4
+{
+font-weight:bold;
+margin:0 auto;
+margin-left:10px;
+line-height:40px;
+float:left;
+}
+.cont-head h6
+{
+	color:#ec680c;
+	margin:0 auto;
+	float:right;
+	margin-right:10px;
+	margin-left:10px;
+	line-height:40px;
+}
+
+.form-head-left
+{
+width:60%;
+min-width:400px;
+float:left;
+}
+.form-head-right
+{
+width:30%;
+min-width:100px;
+float:right;
+margin-top:15px;
+}
+.form 
+{
+width:100%;
+min-height:370px;
+padding-bottom:20px;
+}
+.form-foot-left
+{
+float:left;
+width:320px;
+min-width:300px;
+border-right:5px solid #ececec;
+}
+.form-foot-right
+{
+float:left;
+}
+.form-foot-right .leftimg
+{
+
+	text-align:center;
+	float:left;
+	padding-top:10px;
+	padding-left:50px;
+}
+.form-foot-right .rightimg
+{
+float:left;
+padding-top:10px;
+padding-left:50px;
+width:60px;
+text-align:center;
+display: table-cell;
+vertical-align:middle;
+/* 针对IE的Hack */
+*display: block;
+*font-size:175px;/*约为高度的0.873，200*0.873 约为175*/
+*font-family:Arial;/*防止非utf-8引起的hack失效问题，如gbk编码*/
+
+width:200px;
+height:200px;
+
+}
+.form-foot-right .rightimg p
+{
+
+padding-bottom:10px;
+}
+.form-foot-right .rightimg img 
+{
+vertical-align:middle;
+}
+</style>

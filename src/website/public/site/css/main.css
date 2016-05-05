@@ -1,0 +1,144 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*全局样式*/
+*{padding:0;margin:0 auto;}
+div,dl,dt,dd,form,h1,h2,h3,h4,h5,h6,img,ol,ul,li,table,th,td,p,span,a{border:0;}
+img,input{border:none;vertical-align:middle;}
+body{font-family:Tahoma,Arial,Helvetica,"宋体";font-size:12px;text-align:center;background:#FFF;color:#000;}
+html{overflow-y:scroll;}
+ul,ol{list-style-type:none;}
+th,td,input{font-size:12px;}
+h3{font-size:14px;}
+button{border:none;cursor:pointer;font-size:12px;background-color:transparent;}
+select{border-width:1px;_zoom:1;border-style:solid;padding-top:2px;font-size:12px;}
+.clear{clear:both;font-size:1px;height:0;visibility:hidden;line-height:0;}
+.clearfix:after{content:"";display:block;clear:both;}
+.clearfix{zoom:1;}
+a:link,a:visited{text-decoration:none;color:#333;}
+a:hover,a:active{text-decoration:underline;color:#f60;}
+
+/*开始了！！*/
+.titleBody{
+	width:100%;
+	min-width:960px;
+	height:89px;
+	overflow:hidden;
+	background:url(../images/findPassLogoBg.png) repeat-x;
+	}
+.titleContent{
+	width:960px;
+	}
+.contentBody{
+	width:100%;
+	min-width:960px;
+	overflow:hidden;
+	}
+.fincPassContent{
+	width:960px;
+	height:538px;
+	margin-top:8%;
+	border:1px solid #cfcfcf;
+	background:url(../images/findPassContentBg.png) repeat-x;
+	overflow:hidden;
+	}
+.findPassContentTitle{
+	width:100%;
+	height:45px;
+	line-height:45px;
+	text-indent:1em;
+	text-align:left;
+	font-weight:100;
+	font-size:18px;
+	font-family:"微软雅黑";
+	color:#515151;
+	overflow:hidden;
+	background:url(../images/findPassTitleBg.png) repeat-x;
+	}
+.findPassContentImg{
+	margin-top:28px;
+	}
+.findPassContentDiv{
+	width:100%;
+	font-weight:100;
+	line-height:30px;
+	overflow:hidden;
+	margin-top:40px;
+	}
+.findPassContentLeft{
+	width:370px;
+	float:left;
+	text-align:right;
+	font-family:"微软雅黑";
+	font-size:20px;
+	}
+.findPassContentRight{
+	text-indent:2em;
+	width:587px;
+	float:right;
+	text-align:left;
+	vertical-align:middle;
+	}
+.findPassContentSelect{
+	width:139px;
+	height:28px;
+	border:1px solid #b1b1b1;
+	text-align:center;
+	line-height:28px;
+	webkit-border-radius:4px;
+	moz-border-radius:4px;
+	border-radius:4px;
+	}
+.findPassContentText{
+	height:28px;
+	border:1px solid #b1b1b1;
+	text-align:left;
+	text-indent:1em;
+	line-height:28px;
+	webkit-border-radius:4px;
+	moz-border-radius:4px;
+	border-radius:4px;
+	overflow:hidden;
+	}
+.findPassContentButton{
+	cursor:pointer;
+	height:42px;
+	width:166px;
+	color:#fff;
+	background-color:#f6ae69;
+	font-size:22px;
+	font-family:"微软雅黑";
+	border:1px solid #935103;
+	text-align:center;
+	line-height:28px;
+	webkit-border-radius:4px;
+	moz-border-radius:4px;
+	border-radius:4px;
+	overflow:hidden;
+	}
+.findPassContentCodeImg{
+	width:93px;
+	height:30px;
+	margin-left:30px;
+	}
+.findPassContentThirdH3{
+	text-align:center;
+	vertical-align:middle;
+	line-height:70px;
+	font-size:60px;
+	font-family:"微软雅黑";
+	font-weight:100;
+	color:#333333;
+	overflow:hidden;	
+	}
+.findPassContentThirdP{
+	margin-top:30px;
+	text-align:center;
+	vertical-align:middle;
+	line-height:30px;
+	font-size:30px;
+	font-family:"微软雅黑";
+	font-weight:100;
+	color:#969595;
+	overflow:hidden;	
+	}

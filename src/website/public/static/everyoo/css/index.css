@@ -1,0 +1,162 @@
+
+ul li
+{
+	list-style-type:none;
+}
+#news_content
+{
+	overflow:hidden;
+	margin-top:50px;
+}
+#news_content ul
+{
+	width:995px;
+	height: 355px;
+	overflow: hidden;
+	list-style-type: none;
+	margin-top: 0;
+	margin-bottom: 20px;
+	margin-left:0px;
+	padding-left:0px;
+border-right: 2px solid #DFDFE1;
+}
+#news_content li
+{
+	list-style-type:none;
+	display: list-item;
+	float: left;
+	margin-right: -2px;
+	height: 355px;
+	overflow: hidden;
+}
+.info ul li
+{
+	padding-top:4px;
+}
+.info ul li span{
+	float:right;
+	margin-right:10px;}
+.info .lan_1,.lan_2,.lan_3
+{
+	float:left;
+	overflow:hidden;
+	background:url(../images/zixun_2.png) no-repeat;	
+}
+.lan_2,.lan_3
+{
+	margin-left:32px;
+}
+.details_p
+{
+	display: inline;
+	width:600px;
+	float:left;
+	overflow: hidden;
+}
+.video_img
+{
+	margin-left:15px;
+	float:left;
+	width:38%
+}
+.hr0
+{
+	border:none;
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:30%;
+	float:left;
+ }  
+.hr1
+{
+	border:none;
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:30%;
+	float:right;
+} 
+.hr2
+{
+	border:none;
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:97%;margin:0;
+	padding:0;
+	margin-right:10px;
+	display:block;
+ } 
+.rongyu_1{
+	width:470px;
+	height:271px;
+	float:left;} 
+.honor_info
+{
+	background:url(../images/rongyu_2.png);
+	width:223px;
+	height:271px;
+	float:left;
+}
+.honor_info h2
+{
+	border-bottom:#CCC solid 2px;
+}
+.honor_info .info
+{
+	padding-left:10px;
+	padding-right:10px;
+}
+.solution
+{
+	float:left;	
+	margin-left:30px;
+}
+.solution ul li 
+{
+	list-style-type:none;
+/* background:url(../images/rongyu_3.png); */
+	background-color:#ccc;
+	margin-top:2px;
+	width:149px;
+	height:43px;
+	line-height:41px;
+	text-align:center;
+	color:white;
+}
+.solution .more
+{
+/* background:url(../images/rongyu_5.png);	 */
+	background-color:#000;
+}
+
+.solution .selected
+{
+/* background:url(../images/rongyu_4.png); */
+	background-color:#e36809;
+}
+.frame
+{
+/* position:relative; */
+	width:215px;
+	height:200px;
+	margin-top:-180px;
+	float:left;
+	padding-right:10px;
+	padding-bottom:10px;
+	z-index:2;
+	border-bottom:#ccc solid 1px;
+	border-right:#ccc solid 1px;
+}
+
+.friend ul li
+{
+	float:left;
+	margin-left:15px;
+	height:30px;
+	/*line-height: 30px;*/
+}
+.friend a{
+	color:#9fa0a0;
+}
+.footer_navi a{
+	color:#9fa0a0;
+}

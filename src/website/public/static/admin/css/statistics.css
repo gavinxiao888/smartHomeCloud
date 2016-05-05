@@ -1,0 +1,76 @@
+.date_tab ul {
+    background-color: #E9F1FC;      
+    overflow: hidden;
+    width: 285px;
+    float: left;
+}
+.date_tab ul .hit {
+    background-color: #0965b8;
+    color: white;
+}
+.date_tab ul li {
+    list-style-type: none;
+    float: left;
+    margin-left: 15px;
+    height: 20px;
+    line-height: 27px;
+    height: 27px;
+    text-align: center;
+    font-size: 18px;
+    display: block;
+
+}
+.date_tab {
+    border-top:1px solid #E9F1FC;
+    border-bottom:1px solid #E9F1FC; 
+}
+.table_data table {
+    width:1000px;
+    margin-top:20px;
+	margin-bottom:20px;
+}
+.table_data table tbody th {
+    width:200px;
+    text-align: center;
+}
+.table_data table td {
+    text-align: center;
+
+}
+.data_total table {
+    text-align: center;
+    font-size: 20px;
+    width:1000px;
+
+}
+.summary td {
+    width:250px;
+}
+button {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1em;
+  border-radius: 3px;
+}

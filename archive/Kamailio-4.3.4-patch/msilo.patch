@@ -1,0 +1,220 @@
+diff -urN msilo/api.h msilo1/api.h
+--- msilo/api.h	2016-03-07 16:21:21.355218660 +0800
++++ msilo1/api.h	2016-03-07 16:21:00.023236389 +0800
+@@ -8,10 +8,14 @@
+ 
+ //#include "../../sr_module.h"
+ 
++typedef  int (*send_result_callback)(int result,void* userdata);
++
+ typedef int (*msilo_f)(struct sip_msg*, str*);
++typedef int (*msilo_f2)(str* from,str* to,str* body,send_result_callback _sendcallback,void* userdata);
+ typedef struct msilo_api {
+ 	msilo_f m_store;
+ 	msilo_f m_dump;
++	msilo_f2 m_dump2;
+ } msilo_api_t;
+ 
+ typedef int (*bind_msilo_f)(msilo_api_t* api);
+diff -urN msilo/msilo.c msilo1/msilo.c
+--- msilo/msilo.c	2016-03-07 16:21:21.355218660 +0800
++++ msilo1/msilo.c	2016-03-07 16:21:00.027236386 +0800
+@@ -19,6 +19,25 @@
+  * along with this program; if not, write to the Free Software 
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  *
++ * History
++ * -------
++ *
++ * 2003-01-23: switched from t_uac to t_uac_dlg (dcm)
++ * 2003-02-28: protocolization of t_uac_dlg completed (jiri)
++ * 2003-03-11: updated to the new module interface (andrei)
++ *             removed non-constant initializers to some strs (andrei)
++ * 2003-03-16: flags parameter added (janakj)
++ * 2003-04-05: default_uri #define used (jiri)
++ * 2003-04-06: db_init removed from mod_init, will be called from child_init
++ *             now (janakj)
++ * 2003-04-07: m_dump takes a parameter which sets the way the outgoing URI
++ *             is computed (dcm)
++ * 2003-08-05 adapted to the new parse_content_type_hdr function (bogdan)
++ * 2004-06-07 updated to the new DB api (andrei)
++ * 2006-09-10 m_dump now checks if registering UA supports MESSAGE method (jh)
++ * 2006-10-05 added max_messages module variable (jh)
++ * 2011-10-19 added storage of extra SIP headers (hpw)
++ * 2011-12-07 added storage of extra SIP headers from AVP (jh)
+  */
+ 
+ #include <stdio.h>
+@@ -54,6 +73,11 @@
+ #define MAX_DEL_KEYS	1	
+ #define NR_KEYS			11
+ 
++typedef struct _myhandle{
++	send_result_callback _callback;
++	void* param;
++}myhandle;
++
+ static str sc_mid         = str_init("id");         /*  0 */
+ static str sc_from        = str_init("src_addr");   /*  1 */
+ static str sc_to          = str_init("dst_addr");   /*  2 */
+@@ -91,7 +115,7 @@
+ 
+ MODULE_VERSION
+ 
+-#define S_TABLE_VERSION 8
++#define S_TABLE_VERSION 7
+ 
+ /** database connection */
+ static db1_con_t *db_con = NULL;
+@@ -139,7 +163,6 @@
+ unsigned short ms_extra_hdrs_avp_type;
+ 
+ str msg_type = str_init("MESSAGE");
+-static int ms_skip_notification_flag = -1;
+ 
+ /** module functions */
+ static int mod_init(void);
+@@ -151,6 +174,9 @@
+ static int m_store_2(struct sip_msg*, char*, char*);
+ static int m_dump_2(struct sip_msg*, char*, char*);
+ 
++
++static int m_send_message(str* from,str* to,str* body,send_result_callback _resultcallback,void* userdata);
++
+ static void destroy(void);
+ 
+ static int bind_msilo(msilo_api_t* api);
+@@ -165,6 +191,7 @@
+ 
+ /** TM callback function */
+ static void m_tm_callback( struct cell *t, int type, struct tmcb_params *ps);
++static void my_tm_callback(struct cell* t,int type,struct tmcb_params* ps);
+ 
+ static cmd_export_t cmds[]={
+ 	{"m_store",  (cmd_function)m_store_2, 0, 0, 0, REQUEST_ROUTE | FAILURE_ROUTE},
+@@ -209,7 +236,6 @@
+ 	{ "add_date",         INT_PARAM, &ms_add_date             },
+ 	{ "max_messages",     INT_PARAM, &ms_max_messages         },
+ 	{ "add_contact",      INT_PARAM, &ms_add_contact          },
+-	{ "skip_notification_flag", PARAM_INT, &ms_skip_notification_flag },
+ 	{ 0,0,0 }
+ };
+ 
+@@ -259,6 +285,7 @@
+ 	}
+ 	api->m_store = m_store;
+ 	api->m_dump = m_dump;
++	api->m_dump2 = m_send_message;
+ 	return 0;
+ }
+ 
+@@ -277,15 +304,6 @@
+ 	}
+ #endif
+ 
+-	if(ms_skip_notification_flag!=-1) {
+-		if(ms_skip_notification_flag<0 || ms_skip_notification_flag>31) {
+-			LM_ERR("invalid skip notification flag value: %d\n",
+-					ms_skip_notification_flag);
+-			return -1;
+-		}
+-		ms_skip_notification_flag = 1 << ms_skip_notification_flag;
+-	}
+-
+ 	/* binding to mysql module  */
+ 	if (db_bind_mod(&ms_db_url, &msilo_dbf))
+ 	{
+@@ -821,9 +839,7 @@
+ 	update_stat(ms_stored_msgs, 1);
+ #endif
+ 
+-	if(ms_from==NULL || ms_offline_message == NULL
+-			|| (ms_skip_notification_flag!=-1
+-				&& (msg->flags & ms_skip_notification_flag)))
++	if(ms_from==NULL || ms_offline_message == NULL)
+ 		goto done;
+ 
+ 	LM_DBG("sending info message.\n");
+@@ -923,6 +939,82 @@
+ 	return m_store(msg, NULL);
+ }
+ 
++
++/*
++* my send callback
++*/
++
++void my_tm_callback(struct cell* t,int type,struct tmcb_params* ps)
++{
++	myhandle*  phandle = (myhandle*)(*ps->param);
++	if(phandle == NULL){
++		LM_DBG("message is  not callback\n");
++		return;
++	}
++	
++	if(ps->code >= 3000){
++		LM_DBG("message was not sent successfully\n");
++		LM_DBG("csy output: phandle->_callback = 0x%08x\n",phandle->_callback);
++		if(phandle->_callback)
++			phandle->_callback(ps->code,phandle->param);
++		shm_free(phandle);
++		return;
++	}
++	if(phandle->_callback)
++		phandle->_callback(ps->code,phandle->param);
++	shm_free(phandle);
++	*ps->param = NULL;
++}
++
++/**
++ * send message
++ */
++static int m_send_message(str* from,str* to,str* body,send_result_callback _resultcallback,void* userdata)
++{
++	static char hdr_buf[1024];
++	static char body_buf[1024];
++	str ctype;
++	str extra_hdr;
++	time_t ttime;
++	myhandle * phandle = NULL;
++	uac_req_t uac_r;
++	str hdr_str,body_str;
++	hdr_str.s = hdr_buf;
++	hdr_str.len = 1024;
++	body_str.s = body_buf;
++	body_str.len = 1024;
++	extra_hdr.s = "";
++	extra_hdr.len = 0;
++	ttime = time(NULL);
++	ctype.s = "text/plain";
++	ctype.len = strlen(ctype.s);
++	if(m_build_headers(&hdr_str,ctype,*from,ttime,extra_hdr) < 0){
++		LM_ERR("headers building failed by qiu \n");
++		return -1;
++	}
++	
++	if(m_build_body(&body_str,0,*body,ttime) < 0){
++	
++		LM_ERR("error  body \n");
++		return -1;
++	}
++	phandle = (myhandle*)shm_malloc(sizeof(myhandle));
++	if(phandle == NULL)
++		return -1;
++	phandle->_callback = _resultcallback;
++	phandle->param = userdata;
++	memset(&uac_r,'\0',sizeof(uac_r));
++	uac_r.method = &msg_type;
++	uac_r.headers = &hdr_str;
++	uac_r.body =&body_str;
++	uac_r.cb_flags = TMCB_LOCAL_COMPLETED;
++	uac_r.cb = my_tm_callback;
++	uac_r.cbp = (void*)(long)phandle;
++	LM_DBG("ljw output: _callback 0x%08x --- 0x%08x \n",phandle->_callback,_resultcallback);
++	tmb.t_request(&uac_r,to,to,from,0);
++	return 1;
++}
++
+ /**
+  * dump message
+  */

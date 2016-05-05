@@ -1,0 +1,34 @@
+.footer .code
+{
+    border-right:#ccc solid 1px;
+    float:left;
+}
+.footer_navi
+{
+    width:660px;
+    height:175px;
+    float:left;
+}
+.footer_navi li
+{
+    color:#9fa0a0;
+    float:left;
+    list-style-type:none;
+    float:left;
+    margin-left:20px;
+}
+.footer .tel
+{
+    height:175px;
+    float:left;
+}
+.footer {
+
+    border-bottom: #ccc solid 1px;
+    width: 100%;
+    float: left;
+}
+.container
+{
+    width:1000px
+}

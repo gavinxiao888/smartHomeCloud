@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--该文件是存放admin用户的操作习惯的-->
+<!--name是用户名，reconfirm是用户需不需要在关键操作时输入密码-->
+<admin>
+    <name>everyoo</name><reconfirm>0</reconfirm>
+    <name>zzx</name><reconfirm>0</reconfirm>
+</admin>

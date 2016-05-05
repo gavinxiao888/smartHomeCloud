@@ -1,0 +1,145 @@
+.content
+{
+	width:1000px;
+	margin:0 auto;
+	margin-top:52px;
+	letter-spacing:3px;}
+.content_1
+{
+	text-align:center;}
+.content_1 a
+{
+	font-size:38px;
+	color:#9fa0a0;
+	font-family:"方正细倩简体";
+	text-align:center;
+}
+.content_2
+{
+	text-align:center;
+	margin-top:15px;
+	position:relative;
+	width:100%;}
+.content_2 a
+{
+	font-size:20px;
+	color:#9fa0a0;
+	font-family:"幼圆";
+	text-align:center;
+}
+.content_22
+{
+	width:485px;
+	margin:0 auto;}
+.hr0
+{
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:150px;
+	float:left;
+	position:absolute;
+	top:-9px;
+	margin-left: 0px;
+	/*margin-left: -270px !important;*/
+ } 
+ .hr1
+{
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:150px;
+	left:600px;
+	position:absolute;
+	top:-9px;
+ } 
+  .products
+{
+	margin:0px auto;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	width:100%;
+	margin-top:57px;}
+  .products_0
+{
+	width:453px;
+	margin:0 auto;}
+
+.products_1 
+{
+	border-width:1px 1px 1px 1px;
+	border-style:solid;
+	border-color:#666464 #666464 #ffffff #666464;
+	float:left;
+	margin-right:6px;
+	width:144px;
+	height:38px;
+	display:block;
+	line-height:38px;
+}
+.products_1 a{
+	font-family:微软雅黑;
+	font-size:15px;
+	color:#666464;}
+
+.products_2 
+{
+	margin-right:6px;
+	width:144px;
+	height:38px;
+	background-color:#666464 ;
+	display:block;
+	border:1px solid #666464;
+	float:left;
+	line-height:38px;
+}
+.products_2 a{
+	font-family:微软雅黑;
+	font-size:15px;
+	color:#ffffff;}
+.products_3 
+{
+	float:left;
+	width:144px;
+	height:38px;
+	background-color:#666464 ;
+	display:block;
+	border:1px solid #666464;
+	line-height:38px;
+}
+.products_3 a{
+	font-family:微软雅黑;
+	font-size:15px;
+	color:#ffffff;}
+
+ .products_00
+{
+	width:1000px;
+	margin:0 auto;
+	position:relative;}
+
+.hr2
+{
+	height:1px;
+	border-top:#ccc solid  1px;
+	position:absolute;
+	float:left;
+	min-width:275px;
+	margin-top:40px;
+	
+ } 
+ .hr3
+{
+	height:1px;
+	border-top:#ccc solid  1px;
+	text-align:right;
+	min-width:275px;
+	margin-top:40px;
+	float:right;
+ } 
+ .main
+ {
+	 width:900px;
+	 margin:0 auto;
+	 margin-top:65px;
+ }
+

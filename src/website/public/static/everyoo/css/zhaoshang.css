@@ -1,0 +1,298 @@
+body{min-width:1200px;height:100%;}
+* { margin: 0; padding: 0;border:0;font-family:"微软雅黑" , "SimSun";color:#414040;min-width:}
+@font-face{font-family:'fangzheng';src:url(/static/everyoo/images/zhaoshang/fz.ttf); font-style:normal; font-weight:normal}
+p{font-size:14px;}
+ul li {list-style:none;}
+a{text-decoration:none;color:#727171;}
+/*#page1{ background:url(/static/everyoo/images/zhaoshang/banner.png) no-repeat;background-size:cover;}*/
+#page1 .text .title{display: block;width:355px;height:122px;background-color: #fe9f22;margin:0 auto;text-align: center;font-size:100px;font-weight: 400;color:white;padding-top:20px;font-family: "fangzheng";letter-spacing:5px;margin-top: 20px;}
+#page1 .text p {color:#fe9f22;text-align: center;font-size: 50px;  font-weight: 400;}
+#page1 .text ul {margin-top: 20px;}
+#page1 .text ul li {text-align: center;color:#fe9f22;height:50px;line-height:50px;font-size:24px;}
+#page1 #banner{z-index:1;}
+#page1 .text {z-index:2;position: absolute;top:0;width:100%;}
+#page2 {margin-top:30px;}
+#page2 .title {text-align: center;font-size:50px;color:#fe9f22;font-weight: 100;font-family: "fangzheng";letter-spacing:5px;}
+#page2 .before .first{color:#fe9f22; padding-bottom: 20px;font-size: 35px}
+#page2 .title span{font-size:50px;color:#fe9f22;font-weight: 800;}
+#page2 .before li{line-height: 50px;height:50px;width: 613px;font-size:20px;}
+#page2 .before {width: 613px;margin: 0 auto;margin-top:50px;}
+
+#page2 .middle ul {margin:21% 5% 0 5%;float:left;}
+#page2 .middle li {line-height: 50px;height:50px;font-size:20px;}
+#page2 .middle .first{color:#fe9f22;font-size:35px;}
+#page2 .middle{width:1090px;overflow: hidden;margin: 0 auto}
+#page2 .behind {width: 550px;margin:0 auto;/*float:right;margin-right: 200px*/t}
+#page2 .behind .first{color:#fe9f22;font-size:35px;}
+#page2 .behind li {line-height: 50px;height:50px;font-size:20px;}
+#page3 .title {text-align: center;color:#fe9f22;font-size:80px;font-weight: 800;letter-spacing:5px;padding-bottom: 60px;}
+#page3 .title span{color:#fe9f22;font-size: 50px;}
+#page3 .text {position: relative;margin:0 auto;width:848px;}
+#page3 {width:100%;margin-top: 80px;font-size: 14px}
+#page3 .text #p1 {  position: absolute;  color:white;  top: 12px;  left: 45px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p2 {  position: absolute;      top: 60px;  left: 45px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p3 {  position: absolute;     top: 10px;  left: 714px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p4 {  position: absolute;    top: 57px;  left: 700px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p5 {  position: absolute;  top: 159px;  left: 45px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p6 {  position: absolute;  top: 207px;left:43px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p7 {  position: absolute;  top: 160px; left: 714px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p8 {  position: absolute;  top: 210px; left: 700px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p9 {  position: absolute;  top: 286px;  left: 28px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p10 {  position: absolute;  top: 334px;left:0px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p10 li {}
+#page3 .text #p11 {  position: absolute;  top: 285px;left:696px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p12 {  position: absolute;  top: 330px;left:681px;font-size: 20px;  font-weight: 400;}
+#page3 .text #p13 {  position: absolute;  top: 450px;left:41px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p14 {  position: absolute;  top: 500px;font-size: 20px;  font-weight: 400;left:7px;}
+#page3 .text #p15 {  position: absolute;  top: 450px;left:719px;color:white;font-size: 20px;  font-weight: 400;}
+#page3 .text #p16 {  position: absolute;  top: 500px;left:691px;font-size: 20px;  font-weight: 400;}
+#page3 .text #title {  position: absolute;   top: 196px;color:white; left: 371px;  text-align: center;}
+#page3 .text #title .first{font-size:50px;}
+#page3 .text #title li {line-height: 20px;height: 20px;color:white;font-size:20px;line-height: 30px;height: 30px;}
+#page4 {margin-top: 100px;}
+#page4 .title {color:#fe9f22;font-size: 60px;text-align: center;margin-top: 20px;font-family: "fangzheng";}
+#page4 .text {width:962px;margin:0 auto;position: relative;}
+#page4 .text #alm_1{position: absolute;  top: 400px;  left: 121px;}
+#page4 .text #alm_2{position: absolute;   top: 337px;  left: 355px;
+}
+#page4 .text #alm_3{position: absolute;   top: 290px;  left: 585px;}
+#page4 .text #alm_4 {position: absolute;  top: 200px;  left: 810px;}
+#page4 .text .time_1 {position: absolute;  top: 226px;  left: 73px;color:white;font-size:30px;}
+#page4 .text .time_2 {position: absolute; top: 170px;  left: 310px;color:white;font-size:30px;}
+#page4 .text .time_3 {position: absolute;  top: 112px;  left: 537px;color:white;font-size:30px;}
+#page4 .text .time_4 {position: absolute;  top: 59px;  left: 776px;color:white;font-size:30px;}
+#page4 .text ul li{height:40px;line-height: 40px;font-size:18px;}
+#page4 .text ul li span {font-size:24px;}
+#page5 {width: 1200px;margin:0 auto;background-color: #f0f2f2;margin-top: 100px;}
+#page5 li {line-height: 50px;height:50px;}
+#page5 ul li span {display: block;height: 50px;background-color: #fe9f22;float:left;color:white;  padding-left: 15px;  padding-right: 15px;font-size:24px;}
+#page6 {width:1200px;margin:0 auto;}
+#page6 ul {width:625px;margin:0 auto;}
+#page6 .text{position: relative;width:890px ;margin: 0 auto;}
+#page6  .p1{position: absolute;   top: 55px;  left: 178px;font-size:40px;color:white;}
+#page6  .p2{position: absolute;  top: 133px;  left: 643px;font-size:40px;color:white;letter-spacing:5px;}
+#page6  .p3{position: absolute;  top: 293px;  left: 98px;font-size:40px;color:white;}
+#page6  .p4{position: absolute;  top: 425px;  left: 728px;font-size:40px;color:white;}
+#page6 ul li{height: 50px;line-height:50px;font-size: 24px;}
+#page7 {width:1200px;margin: 0 auto;margin-top: 20px;position: relative;}
+#page7 .text .p1 {position: absolute;top: 168px;left:172px;color:white;font-size:35px;}
+#page7 .text .p2 {position: absolute;  top: 112px;
+  left: 472px;color:white;font-size:35px;}
+#page7 .text .p3 {position: absolute;  top: 380px;
+  left: 82px;color:white;font-size:35px;}
+#page7 .text .p4 {position: absolute;  top: 380px;
+  left: 608px;color:white;font-size:35px;}
+#page7 .text .p5 {position: absolute;  top: 628px;
+  left: 234px;color:white;font-size:35px;}
+#page7 .text .p6 {position: absolute;  top: 628px;
+  left: 516px;color:white;font-size:35px;}
+#page7 .text .title {position: absolute;  top: 333px;
+  left: 300px;color:white;font-size:40px;text-align: center;}
+ #page7 .text .title li {height:60px;line-height: 60px;color:#fe9f22;font-family: "fangzheng";letter-spacing:5px;}
+ #page7 .text .info {width:843px;margin: 0 auto;margin-top: 38%;}
+  #page7 .text .info li span {font-size:40px;font-weight: 400;}
+ #page7 .text .info li{height: 70px;line-height: 70px;font-size:30px;}
+#page8 ul {width:700px;margin: 0 auto;margin-top: -27px;border-bottom: 1px dashed #ccc;padding-bottom: 20px}
+#page8 ul li {font-size:24px;line-height: 50px;height:50px;}
+#page8 ul li span{font-size:30px;}
+#page9 {width:1200px;margin: 0 auto;position: relative;}
+#page9 .text{width:100%;}
+#page9 .title {  display: block;
+  background-color: #fe9f22;
+  height: 90px;
+  line-height: 90px;
+  letter-spacing: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+  color: white;
+  font-size: 50px;
+  width: 180px;
+  text-align: center;
+  margin-top: 30px;
+  margin-left: 22%;
+  letter-spacing: 5px;}
+#page9 .subhead{margin-left:22%;margin-top:30px;font-size:46px;margin-bottom: 30px;color:#fe9f22;letter-spacing:2px;}
+#page9 .text ul{float: left;color:white;  margin-left: 5%;  margin-top: 7%;}
+#page9 .text ul li {color:white;  font-size: 40px;  height: 70px;  line-height: 70px;font-family: "fangzheng";letter-spacing:2px;}
+#page9 .text img {float:right;margin-right: 20px;}
+#page10 {width:1200px;margin:0 auto;}
+#page10 .title{font-size:24px;width:775px;margin: 0 auto;margin-top:40px;margin-bottom: 40px;}
+#page10 .title li {line-height: 50px;height: 50px;}
+#page10 .title li span {font-size:30px;}
+#page10 .text{position: relative;width: 846px;margin: 0 auto;}
+#page10 .text .p1{position: absolute;  top: 90px;font-weight: 400;color:white;  font-size: 26px;
+  font-family: fangzheng;
+  left: 392px;}
+#page10 .text .p2{position: absolute;  top: 291px;font-weight: 400;color:white;  font-size: 26px;
+  font-family: fangzheng;
+  left: 74px;}
+#page10 .text .p3{position: absolute;  top: 289px;font-weight: 400;color:white;  font-size: 26px;
+  font-family: fangzheng;
+  left: 695px;}
+#page10 .text .p4{position: absolute;  top: 566px;font-weight: 400;color:white;  font-size: 26px;
+  font-family: fangzheng;
+  left: 74px;}
+#page10 .text .p5{position: absolute;top:566px;left:707px;font-weight: 400;color:white;
+  font-size: 26px;
+  font-family: fangzheng;}
+#page10 .text .title{position: absolute;  top: 327px;font-weight: 400;color:white;font-size:50px ;
+  left: 293px;  font-size: 50px;
+  font-family: fangzheng;}
+#page11 {width:1200px;margin: 0 auto;margin-top:40px;}
+#page11 .title {font-size:24px;width: 817px;margin: 0 auto;margin-bottom: 50px;}
+#page11 .title li {line-height: 50px;height:50px;}
+#page11 .title li span{font-size:30px;font-weight: 400;}
+#page11 .text{position: relative;border-bottom: 1px dashed #ccc;width: 891px;margin: 0 auto ;margin-top: 140px;font-size:24px;padding-right: 100px;padding-left: 100px;padding-bottom: 150px;text-align: center; }
+#page11 .text  .p1{position: absolute;  top: -80px;
+  left: 498px;}
+#page11 .text  .p2{position: absolute;  top: -50px;  left: 652px;}
+#page11 .text  .p3{position: absolute;  top: 34px;
+  left: 824px;}
+#page11 .text  .p4{position: absolute;  top: 217px;
+  left: 896px;
+}
+#page11 .text  .p5{position: absolute;  top: 372px; left: 839px;font-size: 24px;}
+#page11 .text  .p6{position: absolute;  top: 487px;
+  left: 663px;}
+#page11 .text  .p7{position: absolute; top: 488px;
+  left: 371px;}
+#page11 .text  .p8{position: absolute;  top: 421px;
+  left: 187px;font-size: 24px;}
+#page11 .text  .p9{position: absolute;  top: 232px;  }
+#page11 .text  .p10{position: absolute;top: 59px;  left: 154px;font-size: 24px;}
+#page11 .text  .p11{position: absolute;  top: -30px;  left: 358px;font-size: 24px;}
+#page11 .text  li {height:40px;line-height: 40px;}
+#page12 {width:1200px;margin: 0 auto;}
+#page12 .text{position: relative;width:974px;margin: 0 auto;margin-top: 120px;}
+#page12 .title {   display: block;
+  background-color: #fe9f22;
+  height: 90px;
+  line-height: 90px;
+  letter-spacing: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+  color: white;
+  font-size: 50px;
+  width: 180px;
+  text-align: center;
+  margin-top: 30px;
+  margin-left: 22%;
+  letter-spacing: 5px;}
+#page12 .subhead {
+  margin-left: 22%;
+  margin-top: 30px;
+  font-size: 46px;
+  margin-bottom: 30px;
+  color: #fe9f22;
+  letter-spacing: 2px;
+}
+#page12 .subhead li {color: #fe9f22;}
+#page12 .subhead span {font-size:46px;color: #fe9f22;}
+#page12 .text li {line-height: 30px;height: 30px;}
+#page12 .text  .p1{position: absolute;  top: 88px;  left: 105px;}
+#page12 .text  .p2{position: absolute;  top: 174px;  left: 40px;}
+#page12 .text  .p3{position: absolute;  top: 332px;  left: 43px;}
+#page12 .text  .p4{position: absolute;  top: 60px;  left: 740PX;}
+#page12 .text  .p5{position: absolute;  top: 200px;  left: 740px;}
+#page12 .text  .p6{position: absolute;  top: 340px;  left: 740px;}
+#page12 .text  .p7{position: absolute;  top: -60px;  left: 450px;}
+#page13 {width:1200px;margin: 0 auto;}
+#page13 .title {  display: block;
+  background-color: #fe9f22;
+  height: 90px;
+  line-height: 90px;
+  letter-spacing: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+  color: white;
+  font-size: 50px;
+  width: 180px;
+  text-align: center;
+  margin-top: 30px;
+  margin-left: 22%;
+  letter-spacing: 5px;}
+#page13 .subhead {
+  margin-left: 22%;
+  margin-top: 30px;
+  font-size: 46px;
+  margin-bottom: 30px;
+  color: #fe9f22;
+  letter-spacing: 2px;
+}
+#page13 .subhead li {  color: #fe9f22;}
+#page13 .subhead li span{  color: #fe9f22;font-size:46px;}
+#page13 .text{position: relative;width:948px;margin: 0 auto;margin-top: 80px;}
+#page13 .text li {font-size:20px;line-height: 30px;height: 30px;}
+#page13 .text li span {font-size:24px;font-weight: 600;}
+
+#page13 .text  .p1{position: absolute;top:110px;left:257px;}
+#page13 .text  .p2{position: absolute;top:330px;left:257px;}
+#page13 .text  .p3{position: absolute;top:550px;left:257px;}
+#page13 .text  .p4{position: absolute;top:770px;left:257px;}
+#page13 .text  .p5{position: absolute;    top: 1020px;  left: 257px;}
+#page14 {width:1200px;margin: 0 auto;margin-top:80px;}
+#page14 .title {width:600px;margin:0 auto;}
+#page14 .title li{font-size:60px;overflow: hidden;line-height: 110px;height:110px;  letter-spacing: 13px;color:#fe9f22;font-family: "fangzheng";}
+#page14 .title li p {font-size:60px;float: left;color:#fe9f22;font-family: "fangzheng";}
+#page14 .title li span{    display: block;
+  background-color: #fe9f22;
+  height: 90px;
+  line-height: 90px;
+  letter-spacing: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+  color: white;
+  font-size: 60px;
+  width: 180px;
+  text-align: center;
+  /*margin-top: -13px;*/
+  margin-left: 0%;
+  letter-spacing: 5px;
+  float: left;
+font-family: "fangzheng";}
+#page14 .text{border-bottom: dashed 1px #ccc;width: 656px;;margin: 0 auto;margin-top: 100px;padding-bottom: 40px;}
+#page14 .text li {height: 50px;line-height: 50px;text-indent: 1em;font-size:20px;}
+
+#page15 {width:1200px;margin: 0 auto;margin-top: 70px;}
+#page15 .text{position: relative;}
+#page15 .title {font-size:60px;overflow: hidden;width:772px;margin: 0 auto;letter-spacing: 3px; font-family: "fangzheng";}
+#page15 .title li {text-align: center;color:#fe9f22;height:90px;line-height: 90px;font-family: "fangzheng";}
+#page15 .title li span{display: block;  background-color: #fe9f22; height:90px; line-height: 90px;  letter-spacing: 3px;  padding-left: 14px;
+  padding-right: 14px;  color: white;  font-size: 60px;  width: 274px;  text-align: center;  letter-spacing: 5px;float:left;margin-left: 10px;font-weight: 400;font-family: "fangzheng";}
+#page15 .text {position: relative;width:845px;margin:0 auto;margin-top:50px;}
+#page15 .text .p1{position: absolute;  top: 23px;  left: 12px;  font-size: 16px;color:white;}
+#page15 .text .p2{position: absolute;  top: 65px;  left: 8px; }
+#page15 .text .p3{position: absolute;  top: 22px;  left: 700px;font-size:16px;color:white;}
+#page15 .text .p4_1{position: absolute;  top: 70px;  left: 635px;}
+#page15 .text .p4{position: absolute;top:209px;left:48px;; font-size: 16px;color:white;}
+#page15 .text .p5{position: absolute;top: 251px;
+  left: 16px;}
+#page15 .text .p6{position: absolute;  top: 209px;  left: 707px;font-size: 16px;color:white;}
+#page15 .text .p7{position: absolute;  top: 250px;
+  left: 679px;}
+#page15 .text .p8{position: absolute;  top: 397px;  left: 40px; font-size: 16px;color:white;}
+#page15 .text .p9{position: absolute;  top: 442px;  left: 16px;}
+#page15 .text .p10{position: absolute;  top: 397PX;  left: 708PX; font-size: 16px;color:white;}
+#page15 .text .p11{position: absolute;  top: 445PX;  left: 676PX;}
+#page15 .text li {height: 24px;line-height: 24px;}
+#page15 .text .title{position: absolute;  top: 178px;  left: 344px;color:white;  font-size: 40px;  width: 174px;}
+#page15 .text .title li {height: 50px;text-align:center;line-height: 50px;color:white;}
+
+#page16{width:1200px;margin: 0 auto;margin-top:120px;position: relative;}
+#page16 .text{position: absolute;top:30%;color:white;margin:0 auto;  width: 100%;text-align: left;}
+#page16 .text ul {width:800px;margin:0 auto;}
+#page16 .text li {color:white;font-size:50px;overflow: hidden;height:90px;line-height: 90px;}
+#page16 .text li span {display: block;  background-color: #036ff5; height:70px; line-height: 70px;  letter-spacing: 3px;  padding-left: 14px;
+  padding-right: 14px;  color: white;  font-size: 50px;  width: 305px;  text-align: center;  letter-spacing: 5px;float:left;margin-left: 10px;font-weight: 800;text-align: center;overflow: hidden;}
+#page17 {width:1200px;margin: 0 auto;position: relative;}
+#page17 .text{width:100%;position: absolute;top:51%;}
+#page17 .text ul {width:820px;margin: 0 auto;}
+#page17 .text li{ color:white;font-size:40px;line-height: 90px;height: 90px;}
+#page17 .final {margin-top: 50px;width:972px;float: right;padding-bottom: 50px}
+#page17 .final li {font-size:80px;line-height: 70px;height:70px;letter-spacing:3px;text-align: right;color:#fe9f22;font-weight: 100; }
+#page18 {background-color: #FE9F22;margin-top:30px;padding-bottom: 50px}
+#page18 .content {width:830px;margin:0 auto;padding-top:50px;overflow: hidden;}
+#page18 .content img {float: left;}
+#page18 .content ul {float:right;}
+#page18 .content li {color:white;font-size:26px;height:45px;line-height:45px;}
+.maohao {font-family: "fangzheng";}

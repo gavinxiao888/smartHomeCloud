@@ -1,0 +1,115 @@
+/* CSS Document */
+
+body,  div,  p { margin: 0; padding: 0;}
+ul { list-style: none;}
+html { overflow: hidden;}
+body { width: 100%;  *cursor: default;
+overflow: hidden; font: 16px/1.5 "Microsoft YaHei", Helvetica, STHeiti STXihei, Microsoft JhengHei, Arial;}
+#pageContain { overflow: hidden;}
+.page { display: none; width: 100%; height: 100%; overflow: hidden; position: absolute; top: 0; left: 0;}
+.contain { width: 100%; height: 100%; display: none; position: relative; z-index: 0;}
+.current .contain, .slide .contain { display: block;}
+.current { display: block; z-index: 1;}
+.slide { display: block; z-index: 2;}
+.swipe { display: block; z-index: 3; transition-duration: 0ms !important; -webkit-transition-duration: 0ms !important;}
+.page1 {}
+.page2 { background-color:#fff;}
+.page3 { background-color:#fff;}
+.page4 { background-color:#fff;}
+.page5 { background-color:#fff;}
+.page6 {}
+#navBar { z-index: 3; position: absolute; top: 10%; right: 3%;}
+#navBar .active { background: #ccc;}
+#navBar li { cursor: pointer; margin-bottom: 10px; transition: all .7s ease; border-radius: 50%; line-height: 40px; text-align: center; width: 40px; height: 40px;}
+
+.txt { margin-top: 20%; font-size: 50px; color: #fff; text-align: center;}
+
+.head{ overflow:hidden; height:80px;}
+
+#logo{ float:left; margin:13px 0px 0px 2%;}
+
+.head p{ float:right; margin-right:15%; font-size:14px; font-family:"微软雅黑"; color:#727171; line-height:80px;}
+
+.firstContent{ overflow:hidden; margin:auto;}
+
+.firstContent img{ width:100%;}
+
+.second{ margin:auto; width:1000px; overflow:hidden;}
+
+.secondLeft{ float:left; padding-top:20%;}
+
+.secondLeft p{ position:relative; overflow:hidden;}
+
+.secondLeftBtn{ position:absolute; cursor:pointer; top:238px; left:238px;}
+
+.secondRight{ float:right; padding-top:25%; font-size:24px; color:#727171; font-family:"微软雅黑"; line-height:80px;}
+
+.third{ margin:auto; padding-top:12%; width:1000px; overflow:hidden;}
+
+.thirdLeft{ float:left; margin-right:22px;}
+
+.thirdContent{ float:left; overflow:hidden; width:202px; height:400px; font-size:14px; font-family:"微软雅黑"; color:#666464; text-align:center;}
+
+.thirdContentTop{border-bottom:1px solid #b5b5b6; height:200px;}
+
+.thirdContent img{ margin-top:8%;}
+
+.thirdContentCenter{ border-width:0px 1px 0px 1px; border-style:solid; border-color:#b5b5b6; float:left; overflow:hidden; font-size:14px;
+text-align:center; font-family:"微软雅黑"; color:#666464; line-height:80px; width:386px; height:400px;}
+
+.thirdContentCenter img { margin:25% 0 5% 0;}
+
+.forth{ width:100%; overflow:hidden; position:relative; margin:auto;}
+
+.forthBg{ width:100%;}
+
+.forthContent{ position:absolute; top:10px; left:50%; margin-left:-500px; width:1000px; text-align:center;}
+
+.forthContent h3{ font-size:36px; font-family:"微软雅黑"; color:#595757; font-weight:100; line-height:80px;}
+
+.forthContentRight{ float:right; text-align:center; line-height:90px; margin-top:17%; font-size:24px; font-family:"微软雅黑"; color:#727171;}
+
+.fifth{ width:100%; overflow:hidden; text-align:center;}
+
+.fifth h3{ font-size:36px; font-family:"微软雅黑"; color:#595757; line-height:120px; font-weight:100;}
+
+.fifth p{ font-size:24px; font-family:"微软雅黑"; color:#727171; line-height:80px;}
+
+.fifth img { width:100%;}
+
+.sixth{ width:100%; overflow:hidden; margin:auto; text-align:center; position:relative;}
+
+.sixthBg{ width:100%;}
+
+.sixthTitle{ font-size:28px; font-family:"微软雅黑"; color:#567589; line-height:100px;}
+
+.sixthContent{ position:absolute; top:15%; text-align:center; overflow:hidden; left:0px; width:100%;}
+
+.sixthUl{ width:100%; margin-top:8%;}
+
+.sixthUl li{ width:21%; float:left; text-align:center;}
+
+.sixthUl li p{ font-size:24px; font-family:"微软雅黑"; color:#595757; line-height:80px;}
+
+.sixthLi{ margin-right:2%;}
+
+.othersTitle{ font-size:36px; margin-top:2%; line-height:30px; font-weight:100; color:#595757; font-family:"微软雅黑"; text-align:center;}
+
+.thirteenth{width:1000px; overflow:hidden; margin:auto;}
+
+.thirteenthUl{ width:100%;}
+
+.thirteenthUl li{ float:left; margin-top:10px; width:328px; height:223px; position:relative;}
+
+.thirteenthUl li h4{ position:absolute; left:0px; bottom:15px; background:url(../images/icon30Bg.png) repeat-x; padding:0px 5px 0px 5px;
+font-size:18px; font-family:"微软雅黑"; font-weight:100; cursor:pointer; color:#000000; line-height:60px;}
+
+.thirteenthLi{ margin-right:8px;}
+
+.footerTitle{ font-size:36px; font-family:"微软雅黑"; text-align:center; width:100%; color:#ea5504; line-height:80px;}
+
+.footerImg{ float:right; margin-top:42px;}
+
+.footer{width:1000px; padding:5% 0 2% 0; overflow:hidden; margin:auto;}
+
+.footerP{ font-size:24px; padding-left:20px; font-family:"微软雅黑"; line-height:80px; color:#595757; text-align:left;}

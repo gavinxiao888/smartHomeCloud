@@ -1,0 +1,90 @@
+/*banner的css*/
+    body {
+        -webkit-font-smoothing: antialiased;
+        font: normal 15px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #232525;
+        overflow-x:hidden; 
+    }
+
+#slides {
+    display: block;
+}
+#slides .slidesjs-navigation {
+    margin-top:5px;
+}
+a.slidesjs-next,
+a.slidesjs-previous,
+a.slidesjs-play,
+a.slidesjs-stop {
+    #background-image: url(/static/everyoo/images/jiantou_3.png);
+    background-repeat: no-repeat;
+    display:block;
+    width:16px;
+    height:36px;
+    overflow: hidden;
+    text-indent: -9999px;
+    margin-right:5px;
+    float: left;
+}
+
+a.slidesjs-next {
+    margin-right:10px;
+    background-position: -24px 0;
+    position: absolute;
+    top: 380px;
+    z-index: 100;
+    right:200px;
+}
+
+a.slidesjs-previous {
+    background-position: 0 0;
+    position: absolute;
+    top: 380px;
+    z-index: 100;
+    left:200px;
+}
+a.slidesjs-play {
+    width:15px;
+    background-position: -25px 0;
+}
+a.slidesjs-stop {
+    width:18px;
+    background-position: -41px 0;
+}
+.slidesjs-pagination {
+    margin: 7px 0 0;
+    float: right;
+    list-style: none;
+}
+.slidesjs-pagination li {
+    float: left;
+    margin: 0 1px;
+}
+.slidesjs-pagination li a {
+    display: block;
+    width: 13px;
+    height: 0;
+    padding-top: 13px;
+    /*background-image: url(img/pagination.png);*/
+    background-position: 0 0;
+    float: left;
+    overflow: hidden;
+}
+.slidesjs-pagination li a.active,
+.slidesjs-pagination li a:hover.active {
+    background-position: 0 -13px
+}
+.slidesjs-pagination li a:hover {
+    background-position: 0 -26px
+}
+#slides a:link,
+#slides a:visited {
+    color: #333
+}
+#slides a:hover,
+#slides a:active {
+    color: #9e2020
+}
+.navbar {
+    overflow: hidden
+}

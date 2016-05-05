@@ -1,0 +1,70 @@
+*,body
+{
+    padding:0;
+
+}
+.container
+{
+    width:100%;
+}
+.row
+{
+    width:1000px;
+    margin:0 auto;
+    margin:0 auto;
+}
+.searchbar a
+{
+    margin-left:9px;color:#CCC;
+    display: block;float:left;
+}
+a:hover
+{
+    color:#000;
+}
+.navi_top
+{
+    height:20px;
+    line-height:20px;
+    float:right;
+    margin-top:-50px;
+}
+.navi_top>ul>li
+{
+    float:left;margin-left:37PX;
+    position:relative;
+    height:50px;
+    line-height:50px;
+}
+.navi_top ul li a
+{
+    color:#9fa0a0;
+    font-family:微软雅黑;
+    font-size:14px;
+    letter-spacing:0.2px;
+}
+.navi_top ul li span
+{
+    color:#e36809;
+}
+/*以下三行代码要用jS去修改的*/
+.bar
+{
+    margin-top:-305px;
+    height:47px;
+    width:100%;
+}
+.leftbar
+{
+    padding-left:200px;
+    width:20px;
+    float:left;
+    z-index:2;
+}
+.rightbar
+{
+    float:right;
+    padding-right:200px;
+    width:20px;
+    z-index:2;
+}

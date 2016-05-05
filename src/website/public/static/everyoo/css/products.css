@@ -1,0 +1,199 @@
+
+.products
+{
+	width:1000px;
+	margin:0 auto;
+	position:relative;
+}
+.products_1
+{
+	margin-top:40px;
+	float:left;
+	width:1000px;
+	position:relative;
+}
+.products_11
+{
+	float:left;
+	position:absolute;
+	margin-top:45px;}
+.products_22
+{
+	float:right;
+	line-height:none;
+	margin-top:45px;}
+
+.products_2
+{
+	margin-top:54px;
+	margin:0 auto;
+	width:720px;
+	position:relative;
+	height:230px;
+}
+.products_33
+{
+	width:220px;
+	height:115px;
+	float:left;
+
+}
+.products_44
+{
+	width:280px;
+	height:135px;
+	float:left;
+	text-align:center;
+}
+.products_55
+{
+	width:220px;
+	height:115px;
+
+}
+.products_3
+{
+	float:right;
+	margin-top:-125px;
+}
+.content
+{
+	width:1000px;
+	margin:0 auto;
+	margin-top:52px;
+	letter-spacing:3px;}
+.content_1
+{
+	text-align:center;}
+.content_1 a
+{
+	font-size:38px;
+	color:#9fa0a0;
+	font-family:"方正细倩简体";
+	text-align:center;
+}
+.content_2
+{
+	text-align:center;
+	margin-top:15px;
+	position:relative;
+	width:100%;}
+.content_2 a
+{
+	font-size:20px;
+	color:#9fa0a0;
+	font-family:"幼圆";
+	text-align:center;
+}
+.content_22
+{
+	width:485px;
+	margin:0 auto;}
+.hr0
+{
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:150px;
+	float:left;
+	position:absolute;
+	top:-9px;
+ } 
+ .hr1
+{
+	height:1px;
+	border-top:#ccc solid  1px;
+	width:150px;
+	left:600px;
+	position:absolute;
+	top:-9px;
+ } 
+ .main
+ {
+	 width:900px;
+	 margin:0 auto;
+	 margin-top:65px;
+ }
+.left
+{
+	margin-top:15px;
+	float:left;
+	position: relative;
+	height:115px;
+	width:220px;
+	/*background-image:url('/static/everyoo/images/product_bg.png');*/
+}
+.left p
+{
+	position: absolute;
+	height:115px;
+	line-height:115px;
+	text-align: center;
+	color:#ffffff;
+	font-size: 24px;
+	margin:0 auto;
+	width:220px;
+	font-family:"微软雅黑";
+	background-image: url('/static/everyoo/images/product_bg.png');
+
+}
+.right
+{
+	margin-top:15px;
+	float:left;
+	position: relative;
+	height:115px;
+	width:220px;
+	/*background-image:url('/static/everyoo/images/product_bg.png');*/
+}
+
+.right p
+{
+	position: absolute;
+	height:115px;
+	line-height:115px;
+	text-align: center;
+	color:#ffffff;
+	font-size: 24px;
+	margin:0 auto;
+	width: 220px;
+	font-family:"微软雅黑";
+	background-image: url('/static/everyoo/images/product_bg.png');
+
+}
+.center
+{
+	float:left;
+	position: relative;
+	height:135px;
+	width:280px;
+	/*background-image:url('/static/everyoo/images/product_bg2.png');*/
+}
+.center>p
+{
+	position: absolute;
+	height:135px;
+	line-height:135px;
+	text-align: center;
+	color:#ffffff;
+	font-size: 24px;
+	margin:0 auto;
+	width: 280px;
+	font-family:"微软雅黑";
+	background-image:url('/static/everyoo/images/product_bg2.png');
+}
+.right_navi li
+ {
+	 list-style-type: none;
+	 width:200px;
+	 height:50px;
+	 overflow: hidden;
+	 line-height: 50px;
+	 text-align: center;
+	 margin-top: 3px;
+	 background-color:#C4C4C4;
+ }
+.right_navi .check
+{
+	background-color: #e36809;
+	color:white;
+}

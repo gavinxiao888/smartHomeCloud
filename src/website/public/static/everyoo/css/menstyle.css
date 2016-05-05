@@ -1,0 +1,298 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*全局样式*/
+a{text-decoration:none;}
+img{border:none; vertical-align:middle;}
+li{list-style-type:none;}
+.clear {clear: both;font-size: 1px;line-height: 0px;height: 0px;}
+
+/*i运动开始*/
+.yilingersi{width:1024px;margin:0 auto;}
+.zhentu-1{width:1024px;height:1253px;margin:0 auto;}
+.zhentu-2{width:1024px;height:393px;margin:0 auto;}
+.zhentu-3{width:1024px;height:615px;margin:0 auto;}
+.zhentu-4{width:1024px;height:390px;margin:0 auto;}
+.zhentu-5{width:1024px;height:795px;margin:0 auto;}
+.zhentu-6{width:1024px;height:257px;margin:0 auto;}
+.zhentu-7{width:1024px;height:1097px;margin:0 auto;}
+.zhentu-8{width:1024px;height:426px;margin:0 auto;}
+.zhentu-9{width:1024px;height:1203px;margin:0 auto;}
+.zhentu-10{width:1024px;height:255px;margin:0 auto;}
+.zhentu-11{width:1024px;height:904px;margin:0 auto;}
+.zhentu-12{width:1024px;height:450px;margin:0 auto;}
+.zhentu-13{width:1024px;height:567px;margin:0 auto;}
+.zhentu-14{width:1024px;height:685px;margin:0 auto;}
+.zhentu-15{width:1024px;height:772px;margin:0 auto;}
+.zhentu-16{width:1024px;height:368px;margin:0 auto;}
+.zhentu-17{width:1024px;height:735px;margin:0 auto;}
+.zhentu-18{width:1024px;height:884px;margin:0 auto;}
+.zhentu-19{width:1024px;height:753px;margin:0 auto;}
+.zhentu-20{width:1024px;height:665px;margin:0 auto;}
+.zhentu-21{width:1024px;height:972px;margin:0 auto;}
+.zhentu-22{width:1024px;height:844px;margin:0 auto;}
+.zhentu-23{width:1024px;height:140px;margin:0 auto;}
+/*i运动结束*/
+
+/*云盒开始*/
+.yunhe-1{width:1024px;height:968px;margin:0 auto;}
+.yunhe-2{width:1024px;height:390px;margin:0 auto;}
+.yunhe-3{width:1024px;height:732px;margin:0 auto;}
+.yunhe-4{width:1024px;height:634px;margin:0 auto;}
+.yunhe-5{width:1024px;height:1324px;margin:0 auto;}
+.yunhe-6{width:1024px;height:438px;margin:0 auto;}
+.yunhe-7{width:1024px;height:676px;margin:0 auto;}
+.yunhe-8{width:1024px;height:501px;margin:0 auto;}
+.yunhe-9{width:1024px;height:531px;margin:0 auto;}
+.yunhe-10{width:1024px;height:700px;margin:0 auto;}
+.yunhe-11{width:1024px;height:799px;margin:0 auto;}
+.yunhe-12{width:1024px;height:632px;margin:0 auto;}
+.yunhe-13{width:1024px;height:435px;margin:0 auto;}
+.yunhe-14{width:1024px;height:1229px;margin:0 auto;}
+.yunhe-15{width:1024px;height:502px;margin:0 auto;}
+.yunhe-16{width:1024px;height:310px;margin:0 auto;}
+.yunhe-17{width:1024px;height:690px;margin:0 auto;}
+.yunhe-18{width:1024px;height:617px;margin:0 auto;}
+.yunhe-19{width:1024px;height:564px;margin:0 auto;}
+.yunhe-20{width:1024px;height:1195px;margin:0 auto;}
+.yunhe-21{width:1024px;height:494px;margin:0 auto;}
+.yunhe-22{width:1024px;height:580px;margin:0 auto;}
+.yunhe-23{width:1024px;height:630px;margin:0 auto;}
+.yunhe-24{width:1024px;height:612px;margin:0 auto;}
+.yunhe-25{width:1024px;height:602px;margin:0 auto;}
+.yunhe-26{width:1024px;height:548px;margin:0 auto;}
+.yunhe-27{width:1024px;height:613px;margin:0 auto;}
+.yunhe-28{width:1024px;height:1434px;margin:0 auto;}
+.yunhe-29{width:1024px;height:280px;margin:0 auto;}
+.yunhe-30{width:1024px;height:952px;margin:0 auto;}
+.yunhe-31{width:1024px;height:700px;margin:0 auto;}
+/*云盒结束*/
+
+/*健康开始*/
+.health-1{width:1024px;height:725px;margin:0 auto;}
+.health-2{width:1024px;height:591px;margin:0 auto;}
+.health-3{width:1024px;height:638px;margin:0 auto;}
+.health-4{width:1024px;height:1377px;margin:0 auto;}
+.health-5{width:1024px;height:1343px;margin:0 auto;}
+.health-6{width:1024px;height:669px;margin:0 auto;}
+.health-7{width:1024px;height:698px;margin:0 auto;}
+.health-8{width:1024px;height:819px;margin:0 auto;}
+.health-9{width:1024px;height:539px;margin:0 auto;}
+.health-10{width:1024px;height:1361px;margin:0 auto;}
+.health-11{width:1024px;height:598px;margin:0 auto;}
+.health-12{width:1024px;height:529px;margin:0 auto;}
+.health-13{width:1024px;height:554px;margin:0 auto;}
+.health-14{width:1024px;height:529px;margin:0 auto;}
+.health-15{width:1024px;height:573px;margin:0 auto;}
+.health-16{width:1024px;height:529px;margin:0 auto;}
+/*健康结束*/
+
+/*教育开始*/
+.educ-1{width:1024px;height:771px;margin:0 auto;}
+.educ-2{width:1024px;height:491px;margin:0 auto;}
+.educ-3{width:1024px;height:683px;margin:0 auto;}
+.educ-4{width:1024px;height:438px;margin:0 auto;}
+.educ-5{width:1024px;height:693px;margin:0 auto;}
+.educ-6{width:1024px;height:680px;margin:0 auto;}
+.educ-7{width:1024px;height:516px;margin:0 auto;}
+.educ-8{width:1024px;height:1057px;margin:0 auto;}
+.educ-9{width:1024px;height:653px;margin:0 auto;}
+.educ-10{width:1024px;height:629px;margin:0 auto;}
+.educ-11{width:1024px;height:902px;margin:0 auto;}
+.educ-12{width:1024px;height:599px;margin:0 auto;}
+.educ-13{width:1024px;height:729px;margin:0 auto;}
+.educ-14{width:1024px;height:387px;margin:0 auto;}
+.educ-15{width:1024px;height:834px;margin:0 auto;}
+/*教育结束*/
+
+/*空气净化器开始*/
+.condi-1{width:1024px;height:758px;margin:0 auto;}
+.condi-2{width:1024px;height:747px;margin:0 auto;}
+.condi-3{width:1024px;height:644px;margin:0 auto;}
+.condi-4{width:1024px;height:534px;margin:0 auto;}
+.condi-5{width:1024px;height:800px;margin:0 auto;}
+.condi-6{width:1024px;height:605px;margin:0 auto;}
+.condi-7{width:1024px;height:331px;margin:0 auto;}
+.condi-8{width:1024px;height:570px;margin:0 auto;}
+.condi-9{width:1024px;height:432px;margin:0 auto;}
+.condi-10{width:1024px;height:805px;margin:0 auto;}
+.condi-11{width:1024px;height:850px;margin:0 auto;}
+.condi-12{width:1024px;height:396px;margin:0 auto;}
+.condi-13{width:1024px;height:766px;margin:0 auto;}
+.condi-14{width:1024px;height:1041px;margin:0 auto;}
+.condi-15{width:1024px;height:676px;margin:0 auto;}
+.condi-16{width:1024px;height:386px;margin:0 auto;}
+.condi-17{width:1024px;height:1035px;margin:0 auto;}
+.condi-18{width:1024px;height:813px;margin:0 auto;}
+.condi-19{width:1024px;height:1025px;margin:0 auto;}
+.condi-20{width:1024px;height:484px;margin:0 auto;}
+/*空气净化器结束*/
+
+/*智能家居开始*/
+.ture-1{width:1024px;height:1583px;margin:0 auto;}
+.ture-2{width:1024px;height:536px;margin:0 auto;}
+.ture-3{width:1024px;height:611px;margin:0 auto;}
+.ture-4{width:1024px;height:644px;margin:0 auto;}
+.ture-5{width:1024px;height:777px;margin:0 auto;}
+.ture-6{width:1024px;height:938px;margin:0 auto;}
+.ture-7{width:1024px;height:467px;margin:0 auto;}
+.ture-8{width:1024px;height:747px;margin:0 auto;}
+.ture-9{width:1024px;height:515px;margin:0 auto;}
+.ture-10{width:1024px;height:695px;margin:0 auto;}
+.ture-11{width:1024px;height:360px;margin:0 auto;}
+.ture-12{width:1024px;height:721px;margin:0 auto;}
+.ture-13{width:1024px;height:1274px;margin:0 auto;}
+.ture-14{width:1024px;height:664px;margin:0 auto;}
+.ture-15{width:1024px;height:558px;margin:0 auto;}
+.ture-16{width:1024px;height:392px;margin:0 auto;}
+.ture-17{width:1024px;height:406px;margin:0 auto;}
+.ture-18{width:1024px;height:405px;margin:0 auto;}
+.ture-19{width:1024px;height:394px;margin:0 auto;}
+.ture-20{width:1024px;height:576px;margin:0 auto;}
+.ture-21{width:1024px;height:587px;margin:0 auto;}
+.ture-22{width:1024px;height:847px;margin:0 auto;}
+.ture-23{width:1024px;height:302px;margin:0 auto;}
+.ture-24{width:1024px;height:1197px;margin:0 auto;}
+.ture-25{width:1024px;height:299px;margin:0 auto;}
+.ture-26{width:1024px;height:802px;margin:0 auto;}
+.ture-27{width:1024px;height:576px;margin:0 auto;}
+.ture-28{width:1024px;height:783px;margin:0 auto;}
+.ture-29{width:1024px;height:349px;margin:0 auto;}
+.ture-30{width:1024px;height:633px;margin:0 auto;}
+.ture-31{width:1024px;height:668px;margin:0 auto;}
+.ture-32{width:1024px;height:720px;margin:0 auto;}
+.ture-33{width:1024px;height:626px;margin:0 auto;}
+.ture-34{width:1024px;height:687px;margin:0 auto;}
+.ture-35{width:1024px;height:661px;margin:0 auto;}
+.ture-36{width:1024px;height:548px;margin:0 auto;}
+.ture-37{width:1024px;height:621px;margin:0 auto;}
+/*智能家居结束*/
+
+/*智能家居尊享版开始*/
+.zunx-1{width:1024px;height:1080px;margin:0 auto;}
+.zunx-2{width:1024px;height:592px;margin:0 auto;}
+.zunx-3{width:1024px;height:1055px;margin:0 auto;}
+.zunx-4{width:1024px;height:540px;margin:0 auto;}
+.zunx-5{width:1024px;height:429px;margin:0 auto;}
+.zunx-6{width:1024px;height:279px;margin:0 auto;}
+.zunx-7{width:1024px;height:922px;margin:0 auto;}
+.zunx-8{width:1024px;height:703px;margin:0 auto;}
+.zunx-9{width:1024px;height:621px;margin:0 auto;}
+.zunx-10{width:1024px;height:412px;margin:0 auto;}
+.zunx-11{width:1024px;height:623px;margin:0 auto;}
+.zunx-12{width:1024px;height:362px;margin:0 auto;}
+.zunx-13{width:1024px;height:474px;margin:0 auto;}
+.zunx-14{width:1024px;height:664px;margin:0 auto;}
+.zunx-15{width:1024px;height:337px;margin:0 auto;}
+.zunx-16{width:1024px;height:580px;margin:0 auto;}
+.zunx-17{width:1024px;height:584px;margin:0 auto;}
+.zunx-18{width:1024px;height:635px;margin:0 auto;}
+.zunx-19{width:1024px;height:382px;margin:0 auto;}
+.zunx-20{width:1024px;height:794px;margin:0 auto;}
+.zunx-21{width:1024px;height:532px;margin:0 auto;}
+.zunx-22{width:1024px;height:703px;margin:0 auto;}
+.zunx-23{width:1024px;height:807px;margin:0 auto;}
+.zunx-24{width:1024px;height:1069px;margin:0 auto;}
+.zunx-25{width:1024px;height:326px;margin:0 auto;}
+.zunx-26{width:1024px;height:431px;margin:0 auto;}
+.zunx-27{width:1024px;height:595px;margin:0 auto;}
+.zunx-28{width:1024px;height:1010px;margin:0 auto;}
+.zunx-29{width:1024px;height:704px;margin:0 auto;}
+.zunx-30{width:1024px;height:444px;margin:0 auto;}
+.zunx-31{width:1024px;height:635px;margin:0 auto;}
+.zunx-32{width:1024px;height:301px;margin:0 auto;}
+.zunx-33{width:1024px;height:768px;margin:0 auto;}
+.zunx-34{width:1024px;height:688px;margin:0 auto;}
+.zunx-35{width:1024px;height:639px;margin:0 auto;}
+.zunx-36{width:1024px;height:638px;margin:0 auto;}
+.zunx-37{width:1024px;height:769px;margin:0 auto;}
+.zunx-38{width:1024px;height:687px;margin:0 auto;}
+.zunx-39{width:1024px;height:584px;margin:0 auto;}
+.zunx-40{width:1024px;height:584px;margin:0 auto;}
+.zunx-41{width:1024px;height:594px;margin:0 auto;}
+.zunx-42{width:1024px;height:526px;margin:0 auto;}
+.zunx-43{width:1024px;height:612px;margin:0 auto;}
+.zunx-44{width:1024px;height:607px;margin:0 auto;}
+.zunx-45{width:1024px;height:556px;margin:0 auto;}
+/*智能家居尊享版结束*/
+
+/*小投影仪开始*/
+.camel-1{width:1024px;height:666px;margin:0 auto;}
+.camel-2{width:1024px;height:239px;margin:0 auto;}
+.camel-3{width:1024px;height:592px;margin:0 auto;}
+.camel-4{width:1024px;height:277px;margin:0 auto;}
+.camel-5{width:1024px;height:619px;margin:0 auto;}
+.camel-6{width:1024px;height:238px;margin:0 auto;}
+.camel-7{width:1024px;height:814px;margin:0 auto;}
+.camel-8{width:1024px;height:645px;margin:0 auto;}
+.camel-9{width:1024px;height:886px;margin:0 auto;}
+.camel-10{width:1024px;height:684px;margin:0 auto;}
+.camel-11{width:1024px;height:1085px;margin:0 auto;}
+.camel-12{width:1024px;height:254px;margin:0 auto;}
+.camel-13{width:1024px;height:566px;margin:0 auto;}
+.camel-14{width:1024px;height:252px;margin:0 auto;}
+.camel-15{width:1024px;height:688px;margin:0 auto;}
+.camel-16{width:1024px;height:277px;margin:0 auto;}
+.camel-17{width:1024px;height:659px;margin:0 auto;}
+.camel-18{width:1024px;height:334px;margin:0 auto;}
+.camel-19{width:1024px;height:609px;margin:0 auto;}
+.camel-20{width:1024px;height:155px;margin:0 auto;}
+.camel-21{width:1024px;height:694px;margin:0 auto;}
+.camel-22{width:1024px;height:271px;margin:0 auto;}
+.camel-23{width:1024px;height:795px;margin:0 auto;}
+.camel-24{width:1024px;height:128px;margin:0 auto;}
+.camel-25{width:1024px;height:720px;margin:0 auto;}
+.camel-26{width:1024px;height:881px;margin:0 auto;}
+.camel-27{width:1024px;height:1116px;margin:0 auto;}
+.camel-28{width:1024px;height:1026px;margin:0 auto;}
+.camel-29{width:1024px;height:763px;margin:0 auto;}
+.camel-30{width:1024px;height:1731px;margin:0 auto;}
+.camel-31{width:1024px;height:333px;margin:0 auto;}
+/*小投影仪结束*/
+
+/*云幕M1开始*/
+.ymu-1{width:1024px;height:1058px;margin:0 auto;}
+.ymu-2{width:1024px;height:125px;margin:0 auto;}
+.ymu-3{width:1024px;height:372px;margin:0 auto;}
+.ymu-4{width:1024px;height:868px;margin:0 auto;}
+.ymu-5{width:1024px;height:490px;margin:0 auto;}
+.ymu-6{width:1024px;height:495px;margin:0 auto;}
+.ymu-7{width:1024px;height:607px;margin:0 auto;}
+.ymu-8{width:1024px;height:697px;margin:0 auto;}
+.ymu-9{width:1024px;height:126px;margin:0 auto;}
+.ymu-10{width:1024px;height:801px;margin:0 auto;}
+.ymu-11{width:1024px;height:816px;margin:0 auto;}
+.ymu-12{width:1024px;height:840px;margin:0 auto;}
+.ymu-13{width:1024px;height:126px;margin:0 auto;}
+.ymu-14{width:1024px;height:1181px;margin:0 auto;}
+/*云幕M1结束*/
+
+/*摄像头开始*/
+.zoombie-1{width:1024px;height:855px;margin:0 auto;}
+.zoombie-2{width:1024px;height:296px;margin:0 auto;}
+.zoombie-3{width:1024px;height:1049px;margin:0 auto;}
+.zoombie-4{width:1024px;height:519px;margin:0 auto;}
+.zoombie-5{width:1024px;height:460px;margin:0 auto;}
+.zoombie-6{width:1024px;height:545px;margin:0 auto;}
+.zoombie-7{width:1024px;height:888px;margin:0 auto;}
+.zoombie-8{width:1024px;height:580px;margin:0 auto;}
+.zoombie-9{width:1024px;height:1210px;margin:0 auto;}
+.zoombie-10{width:1024px;height:471px;margin:0 auto;}
+.zoombie-11{width:1024px;height:781px;margin:0 auto;}
+.zoombie-12{width:1024px;height:408px;margin:0 auto;}
+.zoombie-13{width:1024px;height:719px;margin:0 auto;}
+.zoombie-14{width:1024px;height:282px;margin:0 auto;}
+.zoombie-15{width:1024px;height:953px;margin:0 auto;}
+.zoombie-16{width:1024px;height:532px;margin:0 auto;}
+.zoombie-17{width:1024px;height:965px;margin:0 auto;}
+.zoombie-18{width:1024px;height:341px;margin:0 auto;}
+.zoombie-19{width:1024px;height:671px;margin:0 auto;}
+.zoombie-20{width:1024px;height:492px;margin:0 auto;}
+.zoombie-21{width:1024px;height:810px;margin:0 auto;}
+.zoombie-22{width:1024px;height:541px;margin:0 auto;}
+.zoombie-23{width:1024px;height:869px;margin:0 auto;}
+.zoombie-24{width:1024px;height:559px;margin:0 auto;}
+.zoombie-25{width:1024px;height:684px;margin:0 auto;}
+.zoombie-26{width:1024px;height:368px;margin:0 auto;}
+.zoombie-27{width:1024px;height:1074px;margin:0 auto;}
+/*摄像头结束*/

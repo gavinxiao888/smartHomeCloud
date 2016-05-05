@@ -1,0 +1,286 @@
+<!html>
+<html lang="zh-cn">
+<head>
+ <meta charset="utf-8"/>
+<title>个人中心</title>
+<!--<link rel="stylesheet" type="text/css" href="/html/csstest1.css" >-->
+<link rel="stylesheet" type="text/css" href="/userC_undone/center.css" >
+<link rel="stylesheet" type="text/css" href="/userC_undone/bootstrap.css" >
+<script src="/userC_undone/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+function bright(x)
+{
+x.style.border.color=blue;
+}
+</script>
+<script type="text/javascript">//导航下拉
+
+$(document).ready(function(){
+	jQuery.navlevel2 = function(level1,dytime) {
+		
+	  $(level1).mouseenter(function(){
+		  varthis = $(this);
+		  delytime=setTimeout(function(){
+			varthis.find('ul').slideDown();
+		},dytime);
+		
+	  });
+	  $(level1).mouseleave(function(){
+		 clearTimeout(delytime);
+		 $(this).find('ul').slideUp();
+	  });
+	  
+	};
+  $.navlevel2("li.mainlevel",200);
+});
+
+function addCookie(name,value,expires,path, domain)//设置cookie
+{
+    var str=name+"="+escape(value);
+    if(expires!=""){
+        var date=new Date();
+        date.setTime(date.getTime()+expires*24*3600*1000);//expires单位为天
+        str+=";expires="+date.toGMTString();
+    }
+    if(path!=""){
+        str+=";path="+path;//指定可访问cookie的目录
+    }
+    if(domain!=""){
+        str+=";domain="+domain;//指定可访问cookie的域
+    }
+    document.cookie=str;
+}
+</script>
+</head>
+<body>
+<!--头部开始-->
+<div class="container" style="width:1000px;">
+    <div class="col-md-3 col-md-offset-9">
+<p style="height:30px;line-height:30px;overflow:hidden; ">欢迎您<span>zzx11235</span>&nbsp;&nbsp;|<a href="/user/zzx11235/mydevice">我的设备</a>|&nbsp;&nbsp;<a href="/user/zzx11235/account">我的爱悠账号</a ></p>
+    </div>
+</div>
+<!--头部结束-->
+<!--content开始-->
+<div class="container" style="width:1000px;">
+<!--搜索栏-->
+<div class="sibar ">
+<img src="/userC_undone/logo2.png" class="sibar-logo" />
+<div class="sibar-right">
+ <div class="input-group" style="">
+<input class="form-control" type="email" placeholder="搜一下">   
+<div class="input-group-addon"><a><img src="/static/platform/platformimages/sibar.png" /></a></div>
+</div>
+
+<div class="cart"><p>
+<a ><img src="/static/platform/platformimages/cart.png" ><span style="color:white;font-size:12px">购物车</span></a></p>
+</div>
+</div>
+</div>
+<!--搜索栏结束-->
+<!--头部导航开始-->
+<div class="container">
+<div class="row" style="margin-top:20px;"> 
+<ul id="nav">
+    <li class="mainlevel col-md-2" style=""><a href="">全部商品分类&nbsp;<img src="/static/platform/platformimages/arrow-white.png"/></a>
+        <ul>
+        	<li  style="width:200px;"><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+
+        </ul>
+    </li>
+    
+    <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">首页</a>
+        <ul>
+        	<li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+    
+    <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">智慧云盒</a>
+        <ul>
+        	<li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+    <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">智慧云投影</a>
+        <ul>
+        	<li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+	    <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">智慧云平板</a>
+        <ul>
+        	<li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+	    <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">智慧云摄像头</a>
+        <ul>
+        	<li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+	    <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">服务</a>
+        <ul>
+        	<li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+        <li class="mainlevel" style="background:#404144;width:11.9%;"><a href="">在线留言</a>
+        <ul>
+            <li><a href="http://www.51xuediannao.com/js/texiao/">网页特效</a></li>
+
+        </ul>
+    </li>
+</ul>
+</div>
+</div>
+<!--头部导航结束-->
+
+<!--位置导航-->
+<div class="position">
+<h5><a>首页</a>/<a>个人中心</a></h5>
+</div>
+<!--位置导航结束-->
+<div class="container" style=" width:100%;">
+<div class="row"  style="margin-top:20px;">
+<!--左侧导航开始-->
+<div class="navi-left col-md-2" style="">
+<ul>
+    <li style=""><a  class="line" href="">个人中心</a> </li>
+
+    <li ><a class="hit" href="" >我的个人中心</a></li>
+    <li ><a class="" href="" >我的设备</a></li>
+    <li ><a class="" href="" >我的增值服务</a></li>
+
+   
+</ul>    
+<ul>
+    <li style=""><a href=""  class="line">售后服务</a></li>
+
+	<li><a href="" >售后服务</a></li>
+    <li><a href="" >领取快递补偿</a></li>
+    <li><a href="" >历史记录</a></li>
+
+    
+</ul>
+<ul>
+    <li style=""><a  class="line" href="">账号管理</a> </li>
+
+	<li><a href="" >收货地址管理</a></li>
+    <li><a href="" >修改密码</a></li>
+</ul>
+</div>
+<!--左侧导航结束-->
+<!--设备管理开始-->
+<div class="" style="float:left; width:80%; color:#999; margin-left:0px; padding-left:5%;">
+  <div class="" style="">
+    <!--条目-->
+    <div style="float:left; ">
+    <b>我的设备</b>
+    </div>
+    <div style="float:right;width:30%;">
+    <b><a href="">已有设备</a>|<a href="">添加设备</a> </b>    
+    </div>
+  </div>
+  <div style="float:left; overflow:hidden;">
+  <hr class="lang">
+  </div>
+  <!--搜索-->
+  <div class="" style="width:80%; float:; margin-bottom:30px; border:thick; border-color:#3FC;border-width:1px; height:70px; padding-bottom:30px;">
+    <div class="input-group" style="">
+<input class="form-control" type="email" placeholder="设备搜索">   
+     <div class="input-group-addon"><a><img src="/static/platform/platformimages/sibar.png" /></a>
+     </div>
+    </div>
+  </div>
+  <br>
+  <!--图片细则-->
+  
+  <div style=" padding:20px; border:hidden;height:300px; width:1000px; height:auto;">
+    <!--单个图片-->
+  <table>
+  <tr>
+  <td>
+  <div style="padding-top:15px; border:groove; height:250px; width:185px;" onMouseOver="bright(this)">
+      <div style="margin:5px;border-color:#666; border-width:px; padding:5px; width:170px; height:120px;">
+      <img style="width:150px; height:110px;"src="eqpexm.jpg">
+      </div>
+      <dr>
+      <dr>
+      <div style="padding-left:0px; margin-left:-35px;">
+        <ul>
+           <li>name</li>
+           <li>fullname</li>
+           <li><button><img src="sibar.png"></button></li>
+        </ul>
+      </div>
+   </div>
+   </td>
+   <td>
+    <div style="padding-top:15px; border:groove; height:250px; width:185px;" onMouseOver="bright(this)">
+      <div style="margin:5px; border-color:#666; border-width:px; padding:5px; width:170px; height:120px;">
+      <img style="width:150px; height:110px;" src="eqpexm.jpg">
+      </div>
+      <dr>
+      <dr>
+      <div style="padding-left:0px; margin-left:-35px;">
+        <ul>
+           <li>name</li>
+           <li>fullname</li>
+           <li><button><img src="sibar.png"></button></li>
+        </ul>
+      </div>
+   </div>
+   </td>
+   </tr>
+   </table>
+</div>
+<!--设备管理结束-->
+<!--news开始-->
+<div class="news">
+<!--概览-->
+<div class="overview">
+<div id="left">
+<img src="/static/platform/platformimages/head.png"></div>
+<div id="right">
+<h5>zzx11235，早上好！</h5>
+<p>账号安全级别&nbsp<img src="/static/platform/platformimages/safe1.png"/>&nbsp;|&nbsp;<img src="/static/platform/platformimages/bind.png">绑定手机&nbsp;|&nbsp;<img src="/static/platform/platformimages/nobind.png">绑定邮箱&nbsp;|&nbsp;如何提交安全级别？&nbsp;</p>
+</div>
+</div>
+<!--概览结束-->
+<!--未支付订单-->
+<div class="nopaymentorder">
+<h5>&nbsp;&nbsp;&nbsp;未支付订单</h5>
+<p style="padding-top: 24px;padding-bottom: 24px;text-align:center">您暂时没有未支付订单，<a>挑挑喜欢的商品去</a></p>
+</div>
+<!--未支付订单结束-->
+<!--未收货订单-->
+<div class="notreceivedorders">
+<h5>&nbsp;&nbsp;&nbsp;未收货订单</h5>
+<p style="padding-top: 24px;padding-bottom: 24px;text-align:center">您暂时没有未支付订单，<a>挑挑喜欢的商品去</a></p>
+</div>
+<!--未收货订单结束-->
+<!--购物车-->
+<div class="shoppingcart">
+<h5>&nbsp;&nbsp;&nbsp;购物车</h5>
+<p style="padding-top: 24px;padding-bottom: 24px;text-align:center">您的购物车是空的呦，<a>挑挑喜欢的商品去</a></p>
+</div>
+<!--购物车结束-->
+<!--收藏夹-->
+<div class="favorite ">
+<h5>&nbsp;&nbsp;&nbsp;收藏夹</h5>
+<p style="padding-top: 24px;padding-bottom: 24px;text-align:center">您的收藏夹是空的呦，<a>挑挑喜欢的商品去</a></p>
+</div>
+<!--收藏夹结束-->
+</div>
+<!--news结束--->
+
+<!--content结束-->
+</div>
+</div>
+
+
+
+</body>
+</html>
